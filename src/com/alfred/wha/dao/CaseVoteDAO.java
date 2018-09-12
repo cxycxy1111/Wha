@@ -1,0 +1,178 @@
+package com.alfred.wha.dao;
+
+import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.SQLHelper;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class CaseVoteDAO {
+
+    private SQLHelper helper = new SQLHelper();
+
+    public CaseVoteDAO() {
+
+    }
+
+    /**
+     * 首次点赞
+     * @param case_id
+     * @param user_id
+     * @param user_type
+     * @return
+     */
+    public boolean newUpvote(long case_id,long user_id,int user_type) {
+        return executeSql("INSERT INTO case_vote (user_id," +
+                "user_type," +
+                "case_id," +
+                "vote_type," +
+                "create_time," +
+                "last_modify_time," +
+                "del) VALUES ("+
+                user_id+","+
+                user_type + "," + case_id + ",0,'" + MethodTool.getTime() + "','"+ MethodTool.getTime() + "',0)");
+    }
+
+    /**
+     * 首次反对
+     * @param case_id
+     * @param user_id
+     * @param user_type
+     * @return
+     */
+    public boolean newDownvote(long case_id,long user_id,int user_type) {
+        return executeSql("INSERT INTO case_vote (user_id," +
+                "user_type," +
+                "case_id," +
+                "vote_type," +
+                "create_time," +
+                "last_modify_time," +
+                "del) VALUES ("+
+                user_id+","+
+                user_type + "," + case_id + ",1,'" + MethodTool.getTime() + "','"+ MethodTool.getTime() + "',0)");
+    }
+
+    /**
+     * 改变点赞类型
+     * @param case_id 案例id
+     * @param user_id 用户id
+     * @param user_type 用户类型
+     * @param vote_type 投票类型
+     * @return
+     */
+    public boolean updateVoteType(long case_id,long user_id,int user_type,int vote_type) {
+        return executeSql("UPDATE case_vote SET vote_type=" + vote_type + " ,del=0 " +
+                "WHERE user_id=" + user_id + " AND user_type=" + user_type + " AND case_id=" + case_id);
+    }
+
+    /**
+     * 删除（取消赞成或反对）
+     * @param case_id
+     * @param user_id
+     * @param user_type
+     * @return
+     */
+    public boolean delete(long case_id,long user_id,int user_type) {
+        return executeSql("UPDATE case_vote SET del=1 " +
+                "WHERE user_id=" + user_id + " AND case_id=" + case_id + " AND user_type=" + user_id + " AND user_type=" + user_type);
+    }
+
+    /**
+     * 按创建者ID查询
+     * @param user_id
+     * @param user_type
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryByCreator(long user_id,int user_type) {
+        return complexQuery(1,0,user_id,user_type,-1);
+    }
+
+    /**
+     * 按案例ID查询
+     * @param case_id
+     * @param vote_type
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryByCase(long case_id,int vote_type) {
+        return complexQuery(2,case_id,0,0,vote_type);
+    }
+
+    /**
+     * 复杂查询
+     * @param query_type 查询类型 1按用户ID查询 2按案例ID查询
+     * @param case_id
+     * @param user_id
+     * @param user_type 0管理员 1用户
+     * @param vote_type 0赞同 1反对
+     * @return
+     */
+    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,long case_id,long user_id,int user_type,int vote_type) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT ");
+
+        switch (query_type) {
+            //按用户ID查询
+            case 1:
+                builder.append("cv.case_id,")
+                        .append("cv.vote_type,")
+                        .append("c.creator,")
+                        .append("creator_type,")
+                        .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name,")
+                        .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon")
+                        .append("FROM case_vote cv ")
+                        .append("LEFT JOIN cases c ON cv.case_id=c.id ")
+                        .append("LEFT JOIN admin_user au ON c.creator=au.id ")
+                        .append("LEFT JOIN user u ON c.creator_id=u.id ");
+                builder.append("WHERE cv.user_id=").append(user_id).append(" AND cv.user_type=").append(user_type);
+                break;
+            //按案例ID查询
+            case 2:
+                builder.append("CASE WHEN user_type=0 THEN trim(au.nick_name) user_nickname ELSE trim(u.nick_name) user_nickname,")
+                        .append("CASE WHEN user_type=0 THEN trim(au.icon) user_icon ELSE trim(u.icon) user_icon,")
+                        .append("cv.user_id,")
+                        .append("cv.user_type,")
+                        .append("cv.case_id,")
+                        .append("cv.vote_type,")
+                        .append("FROM case_vote cv ")
+                        .append("LEFT JOIN cases c ON cv.case_id=c.id ")
+                        .append("LEFT JOIN user u ON cv.user_id=u.id ")
+                        .append("LEFT JOIN admin_user au ON cv.user_id=au.id ");
+                builder.append("WHERE cv.case_id=").append(case_id);
+                break;
+            default:break;
+        }
+        if (vote_type !=-1) {
+            builder.append(" AND vote_type=").append(vote_type);
+        }
+        builder.append(" ORDER BY last_modify_time DESC");
+        return helper.query(builder.toString());
+    }
+
+
+    /**
+     * 是否曾经赞成或反对
+     * @param case_id 案例ID
+     * @param user_id 用户ID
+     * @param user_type 用户类型
+     * @return
+     */
+    public boolean wasVoted(long case_id,long user_id,int user_type) {
+        if (helper.query("SELECT * FROM case_vote " +
+                "WHERE case_id=" + case_id + " AND user_id=" + user_id + " AND user_type=" + user_type).size() !=0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean executeSql(String sql) {
+        boolean b = false;
+        try {
+            b = helper.update(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+}
