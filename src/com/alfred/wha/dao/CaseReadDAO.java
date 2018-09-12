@@ -37,6 +37,12 @@ public class CaseReadDAO extends DAO{
         return complexQuery(QRY_BY_CASE,case_id,0,0);
     }
 
+    /**
+     * 通过用户ID查询
+     * @param user_id
+     * @param user_type
+     * @return
+     */
     public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type) {
         return complexQuery(QRY_BY_USER,0,user_id,user_type);
     }

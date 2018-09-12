@@ -120,10 +120,16 @@ public class CaseDAO extends DAO{
      * @param id
      * @return
      */
-    public boolean updateUpvoteCount(long id) {
-        String sql = "UPDATE cases SET view_count = CASE WHEN view_count IS NULL THEN 0 ELSE view_count + 1 END " +
-                "WHERE id=" + id;
-        return executeSql(sql);
+    public boolean updateUpvoteCount(long id,boolean is_plus) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE cases SET upvote_count = CASE WHEN upvote_count IS NULL THEN 0 ELSE upvote_count ");
+        if (is_plus) {
+            builder.append("+");
+        }else {
+            builder.append("-");
+        }
+        builder.append("1 END WHERE id=").append(id);
+        return executeSql(builder.toString());
     }
 
     /**
@@ -131,10 +137,16 @@ public class CaseDAO extends DAO{
      * @param id
      * @return
      */
-    public boolean updateDownvoteCount(long id) {
-        String sql = "UPDATE cases SET view_count = CASE WHEN view_count IS NULL THEN 0 ELSE view_count - 1 END " +
-                "WHERE id=" + id;
-        return executeSql(sql);
+    public boolean updateDownvoteCount(long id,boolean is_plus) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE cases SET downvote_count = CASE WHEN downvote_count IS NULL THEN 0 ELSE downvote_count ");
+        if (is_plus) {
+            builder.append("+");
+        }else {
+            builder.append("-");
+        }
+        builder.append("1 END WHERE id=").append(id);
+        return executeSql(builder.toString());
     }
 
     /**

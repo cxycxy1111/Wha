@@ -81,6 +81,18 @@ public class CaseVoteDAO extends DAO{
     }
 
     /**
+     * 查询投票类型
+     * @param case_id
+     * @param user_id
+     * @param user_type
+     * @return 投票类型
+     */
+    public int queryVoteType(long case_id,long user_id,int user_type) {
+        String sql = "SELECT vote_type FROM case_vote WHERE case_id=" + case_id + " AND user_id=" + user_id + " AND user_type=" + user_type;
+        return Tool.getIntegerFromArrayList(helper.query(sql),"vote_type");
+    }
+
+    /**
      * 按创建者ID查询
      * @param user_id
      * @param user_type

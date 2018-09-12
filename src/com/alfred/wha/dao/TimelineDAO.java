@@ -109,6 +109,37 @@ public class TimelineDAO extends DAO{
     }
 
     /**
+     * 通过标题查询是否存在
+     * @param id
+     * @param title
+     * @return
+     */
+    public boolean isExist(long id,String title) {
+        String sql = "SELECT * FROM timeline WHERE title = '" + title + "' AND id != " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过标题查询是否存在
+     * @param title
+     * @return
+     */
+    public boolean isExist(String title) {
+        String sql = "SELECT * FROM timeline WHERE title = '" + title + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过ID查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM timeline WHERE id = " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
      * 通过事件查询时间线，按时间线发生事件倒序排列
      * @param event_id
      * @return
@@ -129,12 +160,11 @@ public class TimelineDAO extends DAO{
 
     /**
      * 通过时间线ID查询具体情况
-     * @param creator_id
-     * @param creator_type
+     * @param timeline
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByTimeline(long creator_id,int creator_type) {
-        return complexQuery(QRY_BY_DETAIL,NULL,NULL,creator_id,creator_type,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryByTimeline(long timeline) {
+        return complexQuery(QRY_BY_DETAIL,timeline,NULL,NULL,NULL,DEL_NO,STATUS_NORMAL);
     }
 
     public ArrayList<HashMap<String,Object>> queryNormal() {

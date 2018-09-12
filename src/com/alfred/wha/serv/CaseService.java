@@ -1,6 +1,8 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.CaseDAO;
+import com.alfred.wha.dao.CaseReadDAO;
+import com.alfred.wha.dao.CaseVoteDAO;
 import com.alfred.wha.util.Tool;
 import com.sun.org.apache.regexp.internal.RE;
 
@@ -10,9 +12,12 @@ import java.util.HashMap;
 public class CaseService extends Service{
 
     private CaseDAO caseDAO;
+    private CaseVoteDAO caseVoteDAO;
+    private CaseReadDAO caseReadDAO;
 
     public CaseService() {
         caseDAO = new CaseDAO();
+        caseVoteDAO = new CaseVoteDAO();
     }
 
     /**
@@ -110,46 +115,59 @@ public class CaseService extends Service{
     }
 
     /**
-     * 更新浏览数
-     * @param id
+     * 更新赞同数
+     * @param case_id
+     * @param user_id
+     * @param user_type
      * @return
      */
-    public String updateViewCount(long id) {
-        if (caseDAO.isExist(id)) {
-            if (caseDAO.updateViewCount(id)) {
+    public String upvote(long case_id,long user_id,int user_type) {
+        if (caseDAO.isExist(case_id)) {
+            if (caseVoteDAO.wasVoted(case_id,user_id,user_type)) {//如果已经投票
+                if (caseVoteDAO.queryVoteType(case_id,user_id,user_type) != 0) {//如果原来是反对
+                    caseVoteDAO.updateVoteType(case_id,user_id,user_type,0);//案例投票中间表改为赞成
+                    caseDAO.updateUpvoteCount(case_id,true);//案例表的赞成数加一
+                    caseDAO.updateDownvoteCount(case_id,false);//案例表的反对数减一
+                    return SUCCESS;
+                }else {//原来已是赞成
+                    caseVoteDAO.delete(case_id,user_id,user_type);//删除案例投票中间表相应数据
+                    caseDAO.updateUpvoteCount(case_id,false);//案例表的赞成数减一
+                    return SUCCESS;
+                }
+            }else {
+                caseVoteDAO.newUpvote(case_id,user_type,user_type);
+                caseDAO.updateUpvoteCount(case_id,true);
                 return SUCCESS;
             }
-            return FAIL;
         }
         return QRY_RESULT_EMPTY;
     }
 
     /**
      * 更新赞同数
-     * @param id
+     * @param case_id
+     * @param user_id
+     * @param user_type
      * @return
      */
-    public String updateUpvoteCount(long id) {
-        if (caseDAO.isExist(id)) {
-            if (caseDAO.updateUpvoteCount(id)) {
+    public String downvote(long case_id,long user_id,int user_type) {
+        if (caseDAO.isExist(case_id)) {
+            if (caseVoteDAO.wasVoted(case_id,user_id,user_type)) {//如果已经投票
+                if (caseVoteDAO.queryVoteType(case_id,user_id,user_type) != 1) {//如果原来是赞成
+                    caseVoteDAO.updateVoteType(case_id,user_id,user_type,1);//案例投票中间表改为反对
+                    caseDAO.updateDownvoteCount(case_id,true);//案例表的反对数加一
+                    caseDAO.updateUpvoteCount(case_id,false);//案例表的赞同数减一
+                    return SUCCESS;
+                }else {//原来已是反对
+                    caseVoteDAO.delete(case_id,user_id,user_type);//删除案例投票中间表相应数据
+                    caseDAO.updateDownvoteCount(case_id,false);//案例表的赞成数减一
+                    return SUCCESS;
+                }
+            }else {
+                caseVoteDAO.newUpvote(case_id,user_type,user_type);
+                caseDAO.updateUpvoteCount(case_id,true);
                 return SUCCESS;
             }
-            return FAIL;
-        }
-        return QRY_RESULT_EMPTY;
-    }
-
-    /**
-     * 更新反对数
-     * @param id
-     * @return
-     */
-    public String updateDownvoteCount(long id) {
-        if (caseDAO.isExist(id)) {
-            if (caseDAO.updateDownvoteCount(id)) {
-                return SUCCESS;
-            }
-            return FAIL;
         }
         return QRY_RESULT_EMPTY;
     }
@@ -157,6 +175,7 @@ public class CaseService extends Service{
     /**
      * 查询自己订阅的事件的新案例
      * @param user_id
+     * @param user_type
      * @return
      */
     public String querySelfSubcribe(long user_id, int user_type) {
@@ -187,13 +206,15 @@ public class CaseService extends Service{
      * @param case_id
      * @return
      */
-    public String queryDetail(long case_id) {
+    public String queryDetail(long case_id,long user_id,int user_type) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
         arrayList = caseDAO.queryDetail(case_id);
-        if (arrayList.size() == 0) {
-            return QRY_RESULT_EMPTY;
+        if (arrayList.size() != 0) {
+            caseReadDAO.add(case_id,user_id,user_type);
+            caseDAO.updateViewCount(case_id);
+            return Tool.transformFromCollection(arrayList);
         }
-        return Tool.transformFromCollection(arrayList);
+        return QRY_RESULT_EMPTY;
     }
 
     /**

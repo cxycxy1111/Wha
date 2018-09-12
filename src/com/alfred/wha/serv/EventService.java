@@ -1,6 +1,7 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.EventDAO;
+import com.alfred.wha.dao.EventSubcribeDAO;
 import com.alfred.wha.util.Tool;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,9 +9,11 @@ import java.util.HashMap;
 public class EventService extends Service{
 
     private EventDAO eventDAO;
+    private EventSubcribeDAO eventSubcribeDAO;
 
     public EventService() {
         eventDAO = new EventDAO();
+        eventSubcribeDAO = new EventSubcribeDAO();
     }
 
     /**
@@ -103,6 +106,38 @@ public class EventService extends Service{
             return FAIL;
         }
         return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 关注
+     * @param user_id
+     * @param event_id
+     * @return
+     */
+    public String subcribe(long user_id,int user_type,long event_id) {
+        if (!eventSubcribeDAO.isSubcribe(user_id,user_type,event_id)) {
+            if (eventSubcribeDAO.subcribe(user_id,user_type,event_id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return unsubcribe(user_id, user_type, event_id);
+    }
+
+    /**
+     * 取消关注
+     * @param user_id
+     * @param event_id
+     * @return
+     */
+    public String unsubcribe(long user_id,int user_type,long event_id) {
+        if (eventSubcribeDAO.isSubcribe(user_id,user_type,event_id)) {
+            if (eventSubcribeDAO.unsubcribe(user_id,user_type,event_id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return subcribe(user_id, user_type, event_id);
     }
 
     /**
