@@ -1,8 +1,7 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,10 +40,10 @@ public class ProductDAO extends DAO{
                 name + "'," +
                 "0," +
                 "1,'" +
-                MethodTool.getTime() + "'," +
+                Tool.getTime() + "'," +
                 creator + "," +
                 creator_type;
-        return MethodTool.executeSql(sql);
+        return Tool.executeSql(sql);
     }
 
     /**
@@ -83,6 +82,26 @@ public class ProductDAO extends DAO{
      */
     public boolean changeName(long product_id,long company_id,String name) {
         return executeSql("UPDATE product SET name='" + name + "',company_id= " + company_id + " WHERE id=" + product_id);
+    }
+
+    /**
+     * 通过用户名查询是否存在
+     * @param name
+     * @return
+     */
+    public boolean isExist(String name) {
+        String sql = "SELECT * FROM product WHERE name = '" + name + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过用户名查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM product WHERE id = " + id;
+        return helper.query(sql).size() != 0;
     }
 
     /**
@@ -136,7 +155,7 @@ public class ProductDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCompany(long creator,int creator_type) {
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
         return complexQuery(QRY_BY_PRODUCT,NULL,NULL,creator,creator_type,DEL_NO,STATUS_PASSED);
     }
 
@@ -157,7 +176,7 @@ public class ProductDAO extends DAO{
     }
 
     /**
-     * 查询已拒绝的产品
+     * 查询未通过的产品
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryRejected() {
@@ -183,7 +202,7 @@ public class ProductDAO extends DAO{
      * @param status
      * @return
      */
-    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,long company_id,long product_id,long creator_id,int creator_type,boolean del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long company_id,long product_id,long creator_id,int creator_type,boolean del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {

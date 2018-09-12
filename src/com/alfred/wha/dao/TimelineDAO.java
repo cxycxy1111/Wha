@@ -1,10 +1,9 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,7 +45,7 @@ public class TimelineDAO extends DAO{
                 "1," +
                 creator + "," +
                 creator_type + ",'" +
-                MethodTool.getTime() + "','" +
+                Tool.getTime() + "','" +
                 happen_time + "')");
     }
 

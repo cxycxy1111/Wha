@@ -2,8 +2,10 @@ package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.UserDAO;
 import com.alfred.wha.dao.UserLoginLogDAO;
-import com.alfred.wha.util.MethodTool;
-import com.alfred.wha.util.Ref;
+import com.alfred.wha.util.Tool;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserService extends Service{
 
@@ -32,10 +34,83 @@ public class UserService extends Service{
         if (userDAO.isExist(username)) {
             return DUPLICATE;
         }
-        if (userDAO.add(username, MethodTool.getMd5FromString(pwd),email)) {
+        if (userDAO.add(username, Tool.getMd5FromString(pwd),email)) {
             return SUCCESS;
         }
         return FAIL;
+    }
+
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
+    public String delete(long id) {
+        if (userDAO.isExist(id)) {
+            if (userDAO.delete(id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 锁定用户
+     * @param id
+     * @return
+     */
+    public String lock(long id) {
+        if (userDAO.isExist(id)) {
+            if (userDAO.lock(id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 修改昵称与签名
+     * @param id
+     * @param nick_name
+     * @param email
+     * @param motto
+     * @return
+     */
+    public String changeNickNameAndMotto(long id,String nick_name,String email,String motto) {
+        if (userDAO.updateInfo(id,nick_name,email,motto)){
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 修改密码
+     * @param id
+     * @param new_pwd
+     * @return
+     */
+    public String changePwd(long id,String new_pwd) {
+        if (userDAO.updatePwd(id,new_pwd)) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 解锁用户
+     * @param id
+     * @return
+     */
+    public String unlock(long id) {
+        if (userDAO.isExist(id)) {
+            if (userDAO.unlock(id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
     }
 
     /**
@@ -46,14 +121,52 @@ public class UserService extends Service{
      */
     public String loginCheck(String username,String pwd,String ip,String system_version,String system_model,String device_brand,String app_version) {
         if (!userDAO.isExist(username)) {
-            userLoginLogDAO.recordLoginLog(username,pwd,0,MethodTool.getTime(),ip,system_version,system_model,device_brand,app_version);
-            return NO_SUCH_RECORD;
+            userLoginLogDAO.recordLoginLog(username,pwd,0, Tool.getTime(),ip,system_version,system_model,device_brand,app_version);
+            return QRY_RESULT_EMPTY;
         }
-        if (userDAO.queryPwd(username).equals(MethodTool.getMd5FromString(pwd))) {
-            userLoginLogDAO.recordLoginLog(username,pwd,1,MethodTool.getTime(),ip,system_version,system_model,device_brand,app_version);
-            return MethodTool.transformFromCollection(userDAO.queryIdByUserName(username));
+        if (userDAO.queryPwdByUsername(username).equals(Tool.getMd5FromString(pwd))) {
+            userLoginLogDAO.recordLoginLog(username,pwd,1, Tool.getTime(),ip,system_version,system_model,device_brand,app_version);
+            return String.valueOf(userDAO.queryIdByUserName(username));
         }
-        userLoginLogDAO.recordLoginLog(username,pwd,0,MethodTool.getTime(),ip,system_version,system_model,device_brand,app_version);
+        userLoginLogDAO.recordLoginLog(username,pwd,0, Tool.getTime(),ip,system_version,system_model,device_brand,app_version);
         return FAIL;
+    }
+
+    /**
+     * 查询已删除的列表
+     * @return
+     */
+    public String queryDeleted() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = userDAO.queryDeleted();
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询已锁定的列表
+     * @return
+     */
+    public String queryLocked() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = userDAO.queryLocked();
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询细节
+     * @param id
+     * @return
+     */
+    public String queryDetail(long id) {
+        if (!userDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(userDAO.queryDetail(id));
     }
 }

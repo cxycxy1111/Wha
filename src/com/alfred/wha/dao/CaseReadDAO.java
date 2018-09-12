@@ -1,6 +1,6 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
@@ -9,6 +9,8 @@ import java.util.HashMap;
 
 public class CaseReadDAO extends DAO{
 
+    private static final int QRY_BY_USER = 1;
+    private static final int QRY_BY_CASE = 2;
     private SQLHelper helper = new SQLHelper();
 
     public CaseReadDAO() {
@@ -23,7 +25,7 @@ public class CaseReadDAO extends DAO{
      * @return
      */
     public boolean add(long case_id,long user_id,long user_type) {
-        return executeSql("INSERT INTO case_read (user_id,user_type,case_id,create_time) VALUES (" + user_id + "," + user_type + "," + case_id + ",'" + MethodTool.getTime() + "')");
+        return executeSql("INSERT INTO case_read (user_id,user_type,case_id,create_time) VALUES (" + user_id + "," + user_type + "," + case_id + ",'" + Tool.getTime() + "')");
     }
 
     /**
@@ -31,12 +33,12 @@ public class CaseReadDAO extends DAO{
      * @param case_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCaseId(long case_id) {
-        return complexQuery(1,case_id,0,0);
+    public ArrayList<HashMap<String,Object>> queryByCase(long case_id) {
+        return complexQuery(QRY_BY_CASE,case_id,0,0);
     }
 
-    public ArrayList<HashMap<String,Object>> queryByUserId(long user_id,int user_type) {
-        return complexQuery(2,0,user_id,user_type);
+    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type) {
+        return complexQuery(QRY_BY_USER,0,user_id,user_type);
     }
 
     /**
@@ -50,7 +52,7 @@ public class CaseReadDAO extends DAO{
     private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long case_id,long user_id,int user_type) {
         StringBuilder builder = new StringBuilder();
         switch (queryType) {
-            case 1://按案例ID查询
+            case QRY_BY_CASE://按案例ID查询
                 builder.append("SELECT cr.user_type,")//用户类型
                         .append("CASE WHEN cr.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
                         .append("CASE WHEN cr.user_type=0 THEN au.icon ELSE u.icon END,")
@@ -62,7 +64,7 @@ public class CaseReadDAO extends DAO{
                                 "LEFT JOIN user u ON cr.user_id=u.id ");
                 builder.append("WHERE cr.case_id=").append(case_id);
                 break;
-            case 2://按阅读的用户ID查询
+            case QRY_BY_USER://按阅读的用户ID查询
                 builder.append("SELECT cr.user_type,")//用户类型
                         .append("CASE WHEN c.creator=0 THEN au.nick_name ELSE u.nick_name END,")//案例创建者的昵称
                         .append("CASE WHEN c.creator=0 THEN au.icon ELSE u.icon END,")//案例创建者的头像

@@ -1,9 +1,8 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
-import java.lang.ref.PhantomReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +54,7 @@ public class CaseDAO extends DAO{
                 "0," +
                 creator_id + "," +
                 creator_type + ",'" +
-                MethodTool.getTime() + "'," + MethodTool.getTime() + ")";
+                Tool.getTime() + "'," + Tool.getTime() + ")";
 
         return executeSql(sql);
     }
@@ -100,7 +99,7 @@ public class CaseDAO extends DAO{
         String sql = "UPDATE cases SET " +
                 "title='" + title + "'," +
                 "content='" + content + "'," +
-                "update_time='" + MethodTool.getTime() + "' " +
+                "update_time='" + Tool.getTime() + "' " +
                 "WHERE id=" + id;
         return executeSql(sql);
     }
@@ -136,6 +135,37 @@ public class CaseDAO extends DAO{
         String sql = "UPDATE cases SET view_count = CASE WHEN view_count IS NULL THEN 0 ELSE view_count - 1 END " +
                 "WHERE id=" + id;
         return executeSql(sql);
+    }
+
+    /**
+     * 通过标题查询是否存在
+     * @param id
+     * @param title
+     * @return
+     */
+    public boolean isExist(long id,String title) {
+        String sql = "SELECT * FROM cases WHERE title = '" + title + "' AND id != " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过标题查询是否存在
+     * @param title
+     * @return
+     */
+    public boolean isExist(String title) {
+        String sql = "SELECT * FROM cases WHERE title = '" + title + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过ID查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM cases WHERE id = " + id;
+        return helper.query(sql).size() != 0;
     }
 
     /**
@@ -182,7 +212,7 @@ public class CaseDAO extends DAO{
     }
 
     /**
-     * 查询已审核的案例列表
+     * 查询已通过的案例列表
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryPassed() {
@@ -190,7 +220,7 @@ public class CaseDAO extends DAO{
     }
 
     /**
-     * 查询已拒绝的案例列表
+     * 查询未通过的案例列表
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryRejected() {

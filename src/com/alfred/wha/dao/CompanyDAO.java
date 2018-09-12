@@ -1,12 +1,10 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class CompanyDAO extends DAO{
@@ -38,7 +36,7 @@ public class CompanyDAO extends DAO{
                 name + "'" +
                 "0," +
                 "1,'" +
-                MethodTool.getTime() + "'," +
+                Tool.getTime() + "'," +
                 creator + "," +
                 creator_type;
         return executeSql(sql);
@@ -84,11 +82,31 @@ public class CompanyDAO extends DAO{
     }
 
     /**
+     * 通过公司名查询是否存在
+     * @param name
+     * @return
+     */
+    public boolean isExist(String name) {
+        String sql = "SELECT * FROM company WHERE name = '" + name + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过ID查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM company WHERE id = " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
      * 通过名称查询
      * @param id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryById(long id) {
+    public ArrayList<HashMap<String,Object>> queryByCompany(long id) {
         return complexQuery(QRY_BY_COMPANY,id,NULL,NULL,STATUS_PASSED,DEL_NO);
     }
 
@@ -101,14 +119,6 @@ public class CompanyDAO extends DAO{
      */
     public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
         return complexQuery(QRY_BY_CREATOR,NULL,creator,creator_type,STATUS_PASSED,DEL_NO);
-    }
-
-    /**
-     * 已删除的公司列表
-     * @return
-     */
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_PASSED,DEL_YES);
     }
 
     /**
@@ -128,11 +138,19 @@ public class CompanyDAO extends DAO{
     }
 
     /**
-     * 已拒绝的公司列表
+     * 未通过的公司列表
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryRejected() {
         return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_REJECTED,DEL_NO);
+    }
+
+    /**
+     * 已删除的公司列表
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryDeleted() {
+        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_PASSED,DEL_YES);
     }
 
     /**

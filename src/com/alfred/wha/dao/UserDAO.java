@@ -1,6 +1,6 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ public class UserDAO extends DAO{
                 "0,'" +
                 username + "','" +
                 email + "','" +
-                MethodTool.getTime() + "'," +
+                Tool.getTime() + "'," +
                 "'default_icon.png')";
         return executeSql(sql);
     }
@@ -89,6 +89,18 @@ public class UserDAO extends DAO{
     }
 
     /**
+     * 修改密码
+     * @param id
+     * @param pwd
+     * @return
+     */
+    public boolean updatePwd(long id,String pwd) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE user SET pwd='").append(Tool.getMd5FromString(pwd)).append("' WHERE id=").append(id);
+        return executeSql(builder.toString());
+    }
+
+    /**
      * 修改头像
      * @param id
      * @param icon_name
@@ -124,9 +136,9 @@ public class UserDAO extends DAO{
      * @param user_name
      * @return
      */
-    public String queryPwd(String user_name) {
+    public String queryPwdByUsername(String user_name) {
         String sql = "SELECT pwd FROM user WHERE user_name = '" + user_name + "'";
-        return MethodTool.getStringFromArrayList(helper.query(sql),"pwd");
+        return Tool.getStringFromArrayList(helper.query(sql),"pwd");
     }
 
     /**
@@ -136,7 +148,7 @@ public class UserDAO extends DAO{
      */
     public long queryIdByUserName(String user_name) {
         String sql = "SELECT id FROM user WHERE user_name='" + user_name + "'";
-        return MethodTool.getLongFromArrayList(helper.query(sql),"id");
+        return Tool.getLongFromArrayList(helper.query(sql),"id");
     }
 
     public ArrayList<HashMap<String,Object>> queryDetail(long id) {
@@ -205,6 +217,16 @@ public class UserDAO extends DAO{
      */
     public boolean isExist(String user_name) {
         String sql = "SELECT * FROM user WHERE user_name = '" + user_name + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过用户名查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM user WHERE id = " + id;
         return helper.query(sql).size() != 0;
     }
 

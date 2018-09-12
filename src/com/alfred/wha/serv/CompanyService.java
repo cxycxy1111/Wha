@@ -1,8 +1,9 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.CompanyDAO;
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,41 +44,130 @@ public class CompanyService extends Service{
         return FAIL;
     }
 
-    /**
-     * 查询公司列表
-     * @param status
-     * @param del
-     * @return
-     */
-    public String queryCompanyList(int status,boolean del) {
-        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryAll(status,del);
-        if (arrayList.size() == 0) {
-            return EMPTY;
-        }
-        return MethodTool.transformFromCollection(arrayList);
-    }
+
 
     /**
-     * 查询公司信息
-     * @param company_id
-     * @return
-     */
-    public String queryCompanyInfo(long company_id) {
-        return MethodTool.transformFromCollection(companyDAO.queryById(company_id));
-    }
-
-    /**
-     * 编辑公司
+     * 更改名称
      * @param company_id
      * @param name
      * @return
      */
-    public String edit(long company_id,String name) {
+    public String changeName(long company_id,boolean is_ignore_name_dupicate,String name) {
+        if (companyDAO.isExist(name)) {
+            if (is_ignore_name_dupicate) {
+                companyDAO.changeName(company_id,name);
+            }
+            return DUPLICATE;
+        }
         if (companyDAO.changeName(company_id,name)) {
             return SUCCESS;
         }
         return FAIL;
+    }
+
+    /**
+     * 通过审核
+     * @param id
+     * @return
+     */
+    public String pass(long id) {
+        if (companyDAO.pass(id)) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 通过ID查询
+     * @param id
+     * @return
+     */
+    public String queryByCompany(long id) {
+        if (!companyDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(companyDAO.queryByCompany(id));
+    }
+
+
+    /**
+     * 通过名称查询
+     * @param creator
+     * @param creator_type
+     * @return
+     */
+    public String queryByCreator(long creator,int creator_type) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.queryByCreator(creator,creator_type);
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 待审核的公司列表
+     * @return
+     */
+    public String queryUnchecked() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.queryUnchecked();
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 已通过的公司列表
+     * @return
+     */
+    public String queryPassed() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.queryPassed();
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 未通过的公司列表
+     * @return
+     */
+    public String queryRejected() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.queryRejected();
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 已删除的公司列表
+     * @return
+     */
+    public String queryDeleted() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.queryDeleted();
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 未通过审核
+     * @param id
+     * @return
+     */
+    public String reject(long id) {
+        if (companyDAO.reject(id)) {
+            return SUCCESS;
+        }
+        return FAIL;
+
     }
 
 }

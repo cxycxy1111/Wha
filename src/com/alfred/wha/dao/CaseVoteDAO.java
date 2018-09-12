@@ -1,14 +1,16 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CaseVoteDAO {
+public class CaseVoteDAO extends DAO{
 
+    private static final int QRY_BY_USER = 1;
+    private static final int QRY_BY_CASE = 2;
     private SQLHelper helper = new SQLHelper();
 
     public CaseVoteDAO() {
@@ -31,7 +33,7 @@ public class CaseVoteDAO {
                 "last_modify_time," +
                 "del) VALUES ("+
                 user_id+","+
-                user_type + "," + case_id + ",0,'" + MethodTool.getTime() + "','"+ MethodTool.getTime() + "',0)");
+                user_type + "," + case_id + ",0,'" + Tool.getTime() + "','"+ Tool.getTime() + "',0)");
     }
 
     /**
@@ -50,7 +52,7 @@ public class CaseVoteDAO {
                 "last_modify_time," +
                 "del) VALUES ("+
                 user_id+","+
-                user_type + "," + case_id + ",1,'" + MethodTool.getTime() + "','"+ MethodTool.getTime() + "',0)");
+                user_type + "," + case_id + ",1,'" + Tool.getTime() + "','"+ Tool.getTime() + "',0)");
     }
 
     /**
@@ -85,7 +87,7 @@ public class CaseVoteDAO {
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryByCreator(long user_id,int user_type) {
-        return complexQuery(1,0,user_id,user_type,-1);
+        return complexQuery(QRY_BY_USER,NULL,user_id,user_type,-1);
     }
 
     /**
@@ -95,7 +97,7 @@ public class CaseVoteDAO {
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryByCase(long case_id,int vote_type) {
-        return complexQuery(2,case_id,0,0,vote_type);
+        return complexQuery(QRY_BY_CASE,case_id,NULL,USER_TYPE_MANAGER,vote_type);
     }
 
     /**
@@ -113,7 +115,7 @@ public class CaseVoteDAO {
 
         switch (query_type) {
             //按用户ID查询
-            case 1:
+            case QRY_BY_USER:
                 builder.append("cv.case_id,")
                         .append("cv.vote_type,")
                         .append("c.creator,")
@@ -127,7 +129,7 @@ public class CaseVoteDAO {
                 builder.append("WHERE cv.user_id=").append(user_id).append(" AND cv.user_type=").append(user_type);
                 break;
             //按案例ID查询
-            case 2:
+            case QRY_BY_CASE:
                 builder.append("CASE WHEN user_type=0 THEN trim(au.nick_name) user_nickname ELSE trim(u.nick_name) user_nickname,")
                         .append("CASE WHEN user_type=0 THEN trim(au.icon) user_icon ELSE trim(u.icon) user_icon,")
                         .append("cv.user_id,")

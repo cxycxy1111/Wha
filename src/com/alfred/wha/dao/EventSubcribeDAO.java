@@ -1,9 +1,8 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
-import javax.sql.rowset.BaseRowSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class EventSubcribeDAO extends DAO{
                 event_id + "," +
                 user_id + ","+
                 user_type + ",'" +
-                MethodTool.getTime() + "')");
+                Tool.getTime() + "')");
     }
 
     /**
@@ -66,7 +65,7 @@ public class EventSubcribeDAO extends DAO{
      * @param user_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByUserId(long user_id,int user_type) {
+    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type) {
         return complexQuery(QRY_BY_SUBCRIBE_USER,user_id,user_type,0);
     }
 

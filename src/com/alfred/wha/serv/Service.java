@@ -14,7 +14,7 @@ public class Service {
     static final String SUCCESS = prefix + "success" + suffix;
     static final String DUPLICATE = prefix + "duplicate" + suffix;
     static final String NOT_MATCH = prefix + "not_match" + suffix;
-    static final String EMPTY = prefix + "empty" + suffix;
+    static final String QRY_RESULT_EMPTY = prefix + "empty" + suffix;
     static final String SESSION_EXPIRED=prefix + "session_expired" + suffix;
     static final String AUTHORIZE_FAIL=prefix + "authorize_fail" + suffix;
 

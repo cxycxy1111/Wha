@@ -1,10 +1,11 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.AdminUserDAO;
-import com.alfred.wha.util.MethodTool;
-import com.alfred.wha.util.Ref;
+import com.alfred.wha.util.Tool;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AdminUserService extends Service{
 
@@ -15,7 +16,30 @@ public class AdminUserService extends Service{
     }
 
     /**
-     * 注册验证
+     * 手动新增
+     * @param company_id
+     * @param username
+     * @param pwd
+     * @param type
+     * @param email
+     * @param creator
+     * @return
+     */
+    public String add(long company_id,String username,String pwd,int type,String email,long creator) {
+        if (type > adminUserDAO.queryTypeById(creator)) {
+            return AUTHORIZE_FAIL;
+        }
+        if (adminUserDAO.isExist(username)) {
+            return DUPLICATE;
+        }
+        if (adminUserDAO.add(company_id,username,pwd,type,email,creator)) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 注册新增
      * @param company_id
      * @param username
      * @param pwd
@@ -35,63 +59,37 @@ public class AdminUserService extends Service{
     }
 
     /**
+     * 删除管理员
+     * @param id
+     * @return
+     */
+    public String delete(long id) {
+        if (adminUserDAO.isExist(id)) {
+            if (adminUserDAO.delete(id)) {
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
      * 登录验证
      * @param user_name
      * @param pwd
      * @return
      */
-    public String login(String user_name,String pwd) {
+    public String loginCheck(String user_name,String pwd) {
         if (!adminUserDAO.isExist(user_name)) {
-            return NO_SUCH_RECORD;
+            return QRY_RESULT_EMPTY;
         }
-        if (MethodTool.getMd5FromString(pwd).equalsIgnoreCase(adminUserDAO.queryPwdByUserName(user_name))) {
-            return MethodTool.getMd5FromString(id_prefix+ adminUserDAO.queryIdByUserName(user_name) + datasuffix);
+        if (Tool.getMd5FromString(pwd).equalsIgnoreCase(adminUserDAO.queryPwdByUserName(user_name))) {
+            return Tool.getMd5FromString(id_prefix+ adminUserDAO.queryIdByUserName(user_name) + datasuffix);
         }
         return NOT_MATCH;
     }
 
-    /**
-     * 新增
-     * @param company_id
-     * @param username
-     * @param pwd
-     * @param type
-     * @param email
-     * @param creator
-     * @return
-     */
-    public String add(long company_id,String username,String pwd,int type,String email,int creator) {
-        if (adminUserDAO.isExist(username)) {
-            return DUPLICATE;
-        }
-        if (adminUserDAO.add(company_id,username,pwd,type,email,creator)) {
-            return SUCCESS;
-        }
-        return FAIL;
-    }
 
-    /**
-     * 检查链
-     * @param checkType
-     * @param id
-     * @return
-     */
-    public String checkChain(int checkType,long id) {
-        if (adminUserDAO.isDel(id)) {
-            return NO_SUCH_RECORD;
-        }
-        String str = "";
-        switch (checkType) {
-            case 1:
-                str = lock(id);
-                break;
-            case 2:
-                str = unlock(id);
-                break;
-            default:;
-        }
-        return str;
-    }
 
     /**
      * 锁定
@@ -99,13 +97,14 @@ public class AdminUserService extends Service{
      * @return
      */
     private String lock(long id) {
-
+        if (adminUserDAO.isDel(id)) {
+            return QRY_RESULT_EMPTY;
+        }
         if (adminUserDAO.lock(id)) {
             return SUCCESS;
         }
         return FAIL;
     }
-
 
     /**
      * 解锁
@@ -113,7 +112,38 @@ public class AdminUserService extends Service{
      * @return
      */
     private String unlock(long id) {
+        if (adminUserDAO.isDel(id)) {
+            return QRY_RESULT_EMPTY;
+        }
         if (adminUserDAO.unlock(id)) {
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 修改昵称与签名
+     * @param id
+     * @param nick_name
+     * @param email
+     * @param motto
+     * @return
+     */
+    public String changeNickNameAndMotto(long id,String nick_name,String email,String motto) {
+        if (adminUserDAO.updateInfo(id,nick_name,email,motto)){
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 修改密码
+     * @param id
+     * @param new_pwd
+     * @return
+     */
+    public String changePwd(long id,String new_pwd) {
+        if (adminUserDAO.updatePwd(id,new_pwd)) {
             return SUCCESS;
         }
         return FAIL;
@@ -143,7 +173,7 @@ public class AdminUserService extends Service{
 
         byte[] data = outStream.toByteArray();
 
-        String pic_name = MethodTool.getMd5FromString(String.valueOf(id) + "_" + MethodTool.getTime());
+        String pic_name = Tool.getMd5FromString(String.valueOf(id) + "_" + Tool.getTime());
         //new一个文件对象用来保存图片，默认保存当前工程根目录
         File imageFile = new File("/usr/local/wha/admin_user/nickname/" + pic_name + ".jpeg");
         //创建输出流
@@ -154,6 +184,57 @@ public class AdminUserService extends Service{
         fileOutputStream.close();
         adminUserDAO.changeIcon(id,pic_name);
         return SUCCESS;
+    }
+
+    /**
+     * 查询已通过的列表
+     * @return
+     */
+    public String queryNormal() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = adminUserDAO.queryNormal();
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询已删除的列表
+     * @return
+     */
+    public String queryDeleted() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = adminUserDAO.queryDeleted();
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询已锁定的列表
+     * @return
+     */
+    public String queryLocked() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = adminUserDAO.queryLocked();
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询细节
+     * @param id
+     * @return
+     */
+    public String queryDetail(long id) {
+        if (!adminUserDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(adminUserDAO.queryDetail(id));
     }
 
 }

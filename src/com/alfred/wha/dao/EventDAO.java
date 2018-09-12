@@ -1,6 +1,6 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
@@ -9,6 +9,9 @@ import java.util.HashMap;
 
 public class EventDAO extends DAO{
 
+    private static final int QRY_BY_CREATOR = 1;
+    private static final int QRY_BY_EVENT = 2;
+    private static final int QRY_BY_STATUS = 3;
     private SQLHelper helper = new SQLHelper();
 
     public EventDAO() {
@@ -37,7 +40,7 @@ public class EventDAO extends DAO{
                 "0," +
                 creator_id + "," +
                 creator_type + ",'" +
-                MethodTool.getTime() + "','" +
+                Tool.getTime() + "','" +
                 happen_time + "'";
         return executeSql(sql);
     }
@@ -81,13 +84,44 @@ public class EventDAO extends DAO{
     }
 
     /**
+     * 通过标题查询是否存在
+     * @param id
+     * @param title
+     * @return
+     */
+    public boolean isExist(long id,String title) {
+        String sql = "SELECT * FROM event WHERE title = '" + title + "' AND id != " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过标题查询是否存在
+     * @param title
+     * @return
+     */
+    public boolean isExist(String title) {
+        String sql = "SELECT * FROM event WHERE title = '" + title + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过ID查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM event WHERE id = " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
      * 通过创建者查询
      * @param creator
      * @param creator_type
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
-        return complexQuery(1,STATUS_IGNORE,DEL_NO,0,creator,creator_type);
+        return complexQuery(QRY_BY_CREATOR,STATUS_IGNORE,DEL_NO,NULL,creator,creator_type);
     }
 
     /**
@@ -96,18 +130,40 @@ public class EventDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryByEvent(long event_id) {
-        return complexQuery(2,STATUS_NORMAL,DEL_NO,event_id,0,USER_TYPE_MANAGER);
+        return complexQuery(QRY_BY_EVENT,STATUS_NORMAL,DEL_NO,event_id,NULL,USER_TYPE_MANAGER);
     }
 
     /**
-     * 通过状态查询
-     * @param status
+     * 查询未通过
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByStatus(int status) {
-        return complexQuery(3,status,DEL_NO,0,0,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryRejected() {
+        return complexQuery(QRY_BY_STATUS,STATUS_REJECTED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
     }
 
+    /**
+     * 查询已通过
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryPassed() {
+        return complexQuery(QRY_BY_STATUS,STATUS_PASSED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
+    }
+
+    /**
+     * 查询未审核
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryUncheck() {
+        return complexQuery(QRY_BY_STATUS,STATUS_NEEDCHECK,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
+    }
+
+    /**
+     * 查询已删除
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryDeleted() {
+        return complexQuery(QRY_BY_STATUS,STATUS_PASSED,DEL_YES,NULL,NULL,USER_TYPE_MANAGER);
+    }
     /**
      * 复杂查询
      * @param queryType 1通过创建者查询 2通过具体ID查询 3通过状态查询
@@ -122,7 +178,7 @@ public class EventDAO extends DAO{
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
-            case 1://通过创建者查询
+            case QRY_BY_CREATOR://通过创建者查询
                 builder.append("e.id,")
                         .append("e.title,")
                         .append("e.del")
@@ -138,7 +194,7 @@ public class EventDAO extends DAO{
                         .append(" AND e.creator_type=")
                         .append(creator_type);
                 break;
-            case 2://通过具体ID查询
+            case QRY_BY_EVENT://通过具体ID查询
                 builder.append("e.id,")
                         .append("e.title,")
                         .append("e.del")
@@ -155,7 +211,7 @@ public class EventDAO extends DAO{
                 builder.append(" WHERE ");
                 builder.append("e.id=").append(event_id);
                 break;
-            case 3://通过状态查询
+            case QRY_BY_STATUS://通过状态查询
                 builder.append("e.id,")
                         .append("e.title,")
                         .append("e.del")
@@ -170,7 +226,6 @@ public class EventDAO extends DAO{
                 builder.append("LEFT JOIN user u ON e.creator_id=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
                 builder.append(" WHERE ");
-
                 if (!del){
                     builder.append("e.status=").append(status).append(" AND ");
                 }

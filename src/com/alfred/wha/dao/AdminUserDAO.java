@@ -1,6 +1,6 @@
 package com.alfred.wha.dao;
 
-import com.alfred.wha.util.MethodTool;
+import com.alfred.wha.util.Tool;
 import com.alfred.wha.util.SQLHelper;
 
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ public class AdminUserDAO extends DAO{
      * @param creator
      * @return
      */
-    public boolean add(long company_id,String username,String pwd,int type,String email,int creator) {
+    public boolean add(long company_id,String username,String pwd,int type,String email,long creator) {
 
         String sql = "INSERT INTO user (" +
                 "company_id," +
@@ -50,7 +50,7 @@ public class AdminUserDAO extends DAO{
                 "0,'" +
                 username + "','" +
                 email + "','" +
-                MethodTool.getTime() + "'," +
+                Tool.getTime() + "'," +
                 creator + "," +
                 "'defult_icon.png')";
         return executeSql(sql);
@@ -79,6 +79,18 @@ public class AdminUserDAO extends DAO{
     }
 
     /**
+     * 修改密码
+     * @param id
+     * @param pwd
+     * @return
+     */
+    public boolean updatePwd(long id,String pwd) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE admin_user SET pwd='").append(Tool.getMd5FromString(pwd)).append("' WHERE id=").append(id);
+        return executeSql(builder.toString());
+    }
+
+    /**
      * 修改头像
      * @param id
      * @param icon_name
@@ -94,8 +106,10 @@ public class AdminUserDAO extends DAO{
      * @param nick_name
      * @return
      */
-    public boolean changeNickName(long id,String nick_name) {
-        return executeSql("UPDATE admin_user SET nick_name='" + nick_name + "' WHERE id=" + id);
+    public boolean changeNickNameAndMotto(long id,String nick_name,String motto) {
+        String builder = "UPDATE admin_user SET nick_name='" + nick_name +
+                "',motto='" + motto + "' WHERE id=" + id;
+        return executeSql(builder);
     }
 
     /**
@@ -148,13 +162,23 @@ public class AdminUserDAO extends DAO{
     }
 
     /**
+     * 通过用户名查询是否存在
+     * @param id
+     * @return
+     */
+    public boolean isExist(long id) {
+        String sql = "SELECT * FROM admin_user WHERE id = " + id;
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
      * 判断是否已经删除
      * @param id
      * @return
      */
     public boolean isDel(long id) {
         String sql="SELECT del FROM admin_user WHERE id=" + id;
-        return MethodTool.getBooleanFromArrayList(helper.query(sql),"del");
+        return Tool.getBooleanFromArrayList(helper.query(sql),"del");
     }
 
     /**
@@ -164,10 +188,15 @@ public class AdminUserDAO extends DAO{
      */
     public boolean isLocked(long id) {
         String sql = "SELECT status FROM admin_user WHERE id=" + id;
-        if (MethodTool.getIntegerFromArrayList(helper.query(sql),"status") == 1) {
+        if (Tool.getIntegerFromArrayList(helper.query(sql),"status") == 1) {
             return true;
         }
         return false;
+    }
+
+    public int queryTypeById(long id) {
+        String sql = "SELECT type FROM admin_user WHERE id=" + id;
+        return Tool.getIntegerFromArrayList(helper.query(sql),"type");
     }
 
     /**
