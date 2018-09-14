@@ -3,6 +3,7 @@ package com.alfred.wha.serv;
 import com.alfred.wha.dao.CaseDAO;
 import com.alfred.wha.dao.CaseReadDAO;
 import com.alfred.wha.dao.CaseVoteDAO;
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.util.Tool;
 import com.sun.org.apache.regexp.internal.RE;
 
@@ -51,11 +52,28 @@ public class CaseService extends Service{
      * @param id
      * @return
      */
-    public String delete(long id) {
+    public String delete(long id,long operator,int operator_type) {
         if (!caseDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.delete(id)) {
+            LogDao.recordCaseLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public String recover(long id,long operator,int operator_type) {
+        if (!caseDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        if (caseDAO.recover(id)) {
+            LogDao.recordCaseLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -65,11 +83,12 @@ public class CaseService extends Service{
      * @param id
      * @return
      */
-    public String pass(long id) {
+    public String pass(long id,long operator,int operator_type) {
         if (!caseDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.pass(id)) {
+            LogDao.recordCaseLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -80,11 +99,12 @@ public class CaseService extends Service{
      * @param id
      * @return
      */
-    public String reject(long id) {
+    public String reject(long id,long operator,int operator_type) {
         if (!caseDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.reject(id)) {
+            LogDao.recordCaseLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -98,10 +118,11 @@ public class CaseService extends Service{
      * @param content
      * @return
      */
-    public String update(boolean is_allow_duplicate,long id,String title,String content) {
+    public String update(boolean is_allow_duplicate,long id,long operator,int operator_type,String title,String content) {
         if (caseDAO.isExist(id,title)) {
             if (is_allow_duplicate) {
                 if (caseDAO.update(id,title,content)) {
+                    LogDao.recordCaseLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新内容为:" + content.substring(0,180));
                     return SUCCESS;
                 }
                 return FAIL;
@@ -128,15 +149,19 @@ public class CaseService extends Service{
                     caseVoteDAO.updateVoteType(case_id,user_id,user_type,0);//案例投票中间表改为赞成
                     caseDAO.updateUpvoteCount(case_id,true);//案例表的赞成数加一
                     caseDAO.updateDownvoteCount(case_id,false);//案例表的反对数减一
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"upvote_count+1");
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"downvote_count-1");
                     return SUCCESS;
                 }else {//原来已是赞成
                     caseVoteDAO.delete(case_id,user_id,user_type);//删除案例投票中间表相应数据
                     caseDAO.updateUpvoteCount(case_id,false);//案例表的赞成数减一
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"upvote_count-1");
                     return SUCCESS;
                 }
             }else {
                 caseVoteDAO.newUpvote(case_id,user_type,user_type);
                 caseDAO.updateUpvoteCount(case_id,true);
+                LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"upvote_count+1");
                 return SUCCESS;
             }
         }
@@ -157,15 +182,19 @@ public class CaseService extends Service{
                     caseVoteDAO.updateVoteType(case_id,user_id,user_type,1);//案例投票中间表改为反对
                     caseDAO.updateDownvoteCount(case_id,true);//案例表的反对数加一
                     caseDAO.updateUpvoteCount(case_id,false);//案例表的赞同数减一
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"downvote_count+1");
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"upvote_count-1");
                     return SUCCESS;
                 }else {//原来已是反对
                     caseVoteDAO.delete(case_id,user_id,user_type);//删除案例投票中间表相应数据
                     caseDAO.updateDownvoteCount(case_id,false);//案例表的赞成数减一
+                    LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"downvote_count-1");
                     return SUCCESS;
                 }
             }else {
                 caseVoteDAO.newUpvote(case_id,user_type,user_type);
                 caseDAO.updateUpvoteCount(case_id,true);
+                LogDao.recordCaseLog(case_id,LOG_OPERATE_EDIT,user_id,user_type,"upvote_count+1");
                 return SUCCESS;
             }
         }

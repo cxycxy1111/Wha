@@ -15,7 +15,7 @@ public class DatabaseBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/MainDatabase?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true&useSSL=true";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/Whale?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true&useSSL=true";
     private static final String USER = "root";
     private static final String PASSWORD = "cxycxy11";
 

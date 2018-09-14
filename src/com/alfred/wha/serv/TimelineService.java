@@ -1,5 +1,6 @@
 package com.alfred.wha.serv;
 
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.dao.TimelineDAO;
 import com.alfred.wha.util.Tool;
 
@@ -45,11 +46,12 @@ public class TimelineService extends Service{
      * @param id
      * @return
      */
-    public String delete(long id) {
+    public String delete(long id,long operator,int operator_type) {
         if (!timelineDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.delete(id)) {
+            LogDao.recordTimelineLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -63,10 +65,11 @@ public class TimelineService extends Service{
      * @param happen_time
      * @return
      */
-    public String update(boolean is_allow_duplicate,long id,String title,String content,String happen_time) {
+    public String update(boolean is_allow_duplicate,long id,long operator,int operator_type,String title,String content,String happen_time) {
         if (timelineDAO.isExist(id,title)) {
             if (is_allow_duplicate) {
                 if (timelineDAO.update(id,title,content,happen_time)) {
+                    LogDao.recordTimelineLog(id,LOG_OPERATE_EDIT,operator,operator_type,"标题:"+ title + ",发生时间为:"+happen_time + ",内容为:"+happen_time.substring(0,200));
                     return SUCCESS;
                 }
                 return FAIL;
@@ -84,11 +87,12 @@ public class TimelineService extends Service{
      * @param id
      * @return
      */
-    public String pass(long id) {
+    public String pass(long id,long operator,int operator_type) {
         if (!timelineDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.pass(id)) {
+            LogDao.recordTimelineLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -99,11 +103,12 @@ public class TimelineService extends Service{
      * @param id
      * @return
      */
-    public String reject(long id) {
+    public String reject(long id,long operator,int operator_type) {
         if (!timelineDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.reject(id)) {
+            LogDao.recordTimelineLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;

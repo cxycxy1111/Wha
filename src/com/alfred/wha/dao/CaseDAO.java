@@ -68,6 +68,17 @@ public class CaseDAO extends DAO{
         String sql = "UPDATE del=1 WHERE id=" + id;
         return executeSql(sql);
     }
+
+    /**
+     * 恢复
+     * @param id
+     * @return
+     */
+    public boolean recover(long id) {
+        String sql = "UPDATE del=0 WHERE id=" + id;
+        return executeSql(sql);
+    }
+
     /**
      * 审核通过
      * @param id
@@ -247,7 +258,7 @@ public class CaseDAO extends DAO{
      * @param case_id
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long user_id,int user_type,long case_id,int status,boolean del) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long user_id,int user_type,long case_id,int status,int del) {
         StringBuilder builder = new StringBuilder();
         if (queryType == QRY_DETAIL) {
             builder.append("SELECT c.id,")//案例ID
@@ -268,7 +279,7 @@ public class CaseDAO extends DAO{
                     .append("LEFT JOIN user u ON c.creator_id=u.id ")
                     .append("LEFT JOIN admin_user au ON c.creator=au.id ");
             builder.append("WHERE c.id=").append(case_id);
-        }else {
+        } else {
             builder.append("SELECT c.id,")//案例ID
                     .append("c.title,")//案例标题
                     .append("c.creator,")//创建者ID
@@ -291,7 +302,7 @@ public class CaseDAO extends DAO{
                     builder.append("LEFT JOIN event e ON c.event_id=e.id ")
                             .append("LEFT JOIN user u ON c.creator_id=u.id ")
                             .append("LEFT JOIN admin_user au ON c.creator=au.id ");
-                    builder.append("WHERE event_id IN (SELECT event_id FROM event_subcribe WHERE ")
+                    builder.append("WHERE event_id IN (SELECT event_id FROM event_subscribe WHERE ")
                             .append("user_id=").append(user_id)
                             .append(" AND user_type=").append(user_type)
                             .append(")");
@@ -305,15 +316,16 @@ public class CaseDAO extends DAO{
                     builder.append("LEFT JOIN event e ON c.event_id=e.id ")
                             .append("LEFT JOIN user u ON c.creator_id=u.id ")
                             .append("LEFT JOIN admin_user au ON c.creator=au.id ");
-                    if (!del) {
+                    if (del == 0) {
                         builder.append("e.status=").append(status).append(" AND ");
+                    } else {
+                        builder.append("e.del=").append(del);
                     }
-                    builder.append("e.del=").append(del);
                     break;
                 default:break;
             }
+            builder.append(" ORDER BY c.id DESC");
         }
-        builder.append(" ORDER BY c.id DESC");
         return helper.query(builder.toString());
     }
 

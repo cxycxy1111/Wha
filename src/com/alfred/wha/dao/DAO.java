@@ -15,8 +15,8 @@ public class DAO {
     static final int USER_TYPE_MANAGER=0;
     static final int USER_TYPE_USER=1;
 
-    static final boolean DEL_YES=true;
-    static final boolean DEL_NO=false;
+    static final int DEL_YES=1;
+    static final int DEL_NO=0;
 
     public DAO() {
 

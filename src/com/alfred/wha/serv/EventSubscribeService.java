@@ -1,17 +1,17 @@
 package com.alfred.wha.serv;
 
-import com.alfred.wha.dao.EventSubcribeDAO;
+import com.alfred.wha.dao.EventSubscribeDAO;
 import com.alfred.wha.util.Tool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventSubcribeService extends Service{
+public class EventSubscribeService extends Service{
     
-    private EventSubcribeDAO eventSubcribeDAO;
+    private EventSubscribeDAO eventSubcribeDAO;
     
-    public EventSubcribeService() {
-        eventSubcribeDAO = new EventSubcribeDAO();
+    public EventSubscribeService() {
+        eventSubcribeDAO = new EventSubscribeDAO();
     }
 
     /**

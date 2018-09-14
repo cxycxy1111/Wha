@@ -174,7 +174,7 @@ public class EventDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int status,boolean del,long event_id,long creator_id,int creator_type) {
+    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int status,int del,long event_id,long creator_id,int creator_type) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -226,10 +226,11 @@ public class EventDAO extends DAO{
                 builder.append("LEFT JOIN user u ON e.creator_id=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
                 builder.append(" WHERE ");
-                if (!del){
+                if (del == 0){
                     builder.append("e.status=").append(status).append(" AND ");
+                } else {
+                    builder.append(" e.del=").append(del);
                 }
-                builder.append(" e.del=").append(del);
                 builder.append(" ORDER BY e.id DESC");
             default:break;
         }

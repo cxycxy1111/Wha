@@ -1,6 +1,7 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.CompanyDAO;
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.util.Tool;
 
 import java.sql.SQLException;
@@ -37,14 +38,26 @@ public class CompanyService extends Service{
      * @param company_id
      * @return
      */
-    public String delete(long company_id) {
+    public String delete(long company_id,long operator,int operator_type) {
         if (companyDAO.delete(company_id)) {
+            LogDao.recordCompanyLog(company_id,LOG_OPERATE_DELETE,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
     }
 
-
+    /**
+     * 恢复
+     * @param company_id
+     * @return
+     */
+    public String recover(long company_id,long operator,int operator_type) {
+        if (companyDAO.recover(company_id)) {
+            LogDao.recordCompanyLog(company_id,LOG_OPERATE_RECOVER,operator,operator_type,"");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
 
     /**
      * 更改名称
@@ -52,10 +65,11 @@ public class CompanyService extends Service{
      * @param name
      * @return
      */
-    public String changeName(long company_id,boolean is_ignore_name_dupicate,String name) {
+    public String changeName(long company_id,long operator,int operator_type,boolean is_ignore_name_dupicate,String name) {
         if (companyDAO.isExist(name)) {
             if (is_ignore_name_dupicate) {
                 companyDAO.changeName(company_id,name);
+                LogDao.recordCompanyLog(company_id,LOG_OPERATE_EDIT,operator,operator_type,"新名称为:"+name);
             }
             return DUPLICATE;
         }
@@ -70,11 +84,26 @@ public class CompanyService extends Service{
      * @param id
      * @return
      */
-    public String pass(long id) {
+    public String pass(long id,long operator,int operator_type) {
         if (companyDAO.pass(id)) {
+            LogDao.recordCompanyLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
+    }
+
+    /**
+     * 未通过审核
+     * @param id
+     * @return
+     */
+    public String reject(long id,long operator,int operator_type) {
+        if (companyDAO.reject(id)) {
+            LogDao.recordCompanyLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
+            return SUCCESS;
+        }
+        return FAIL;
+
     }
 
     /**
@@ -155,19 +184,6 @@ public class CompanyService extends Service{
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(arrayList);
-    }
-
-    /**
-     * 未通过审核
-     * @param id
-     * @return
-     */
-    public String reject(long id) {
-        if (companyDAO.reject(id)) {
-            return SUCCESS;
-        }
-        return FAIL;
-
     }
 
 }

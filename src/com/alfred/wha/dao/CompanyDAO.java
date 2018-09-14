@@ -33,12 +33,12 @@ public class CompanyDAO extends DAO{
                 "create_time," +
                 "creator," +
                 "creator_type) VALUES ( '" +
-                name + "'" +
+                name + "'," +
                 "0," +
                 "1,'" +
                 Tool.getTime() + "'," +
                 creator + "," +
-                creator_type;
+                creator_type + ")";
         return executeSql(sql);
     }
 
@@ -49,6 +49,16 @@ public class CompanyDAO extends DAO{
      */
     public boolean delete(long company_id) {
         String sql = "UPDATE company SET del=1 WHERE id=" + company_id;
+        return executeSql(sql);
+    }
+
+    /**
+     * 恢复
+     * @param company_id
+     * @return
+     */
+    public boolean recover(long company_id) {
+        String sql = "UPDATE company SET del=0 WHERE id=" + company_id;
         return executeSql(sql);
     }
 
@@ -160,7 +170,7 @@ public class CompanyDAO extends DAO{
      * @param del
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long creator,int creator_type,int status,boolean del) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long creator,int creator_type,int status,int del) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");//公司ID
         switch (queryType) {
@@ -171,15 +181,15 @@ public class CompanyDAO extends DAO{
                         .append("c.del,")//是否已删除
                         .append("c.status,")//公司状态
                         .append("c.creator,")//创建人id
-                        .append("c.creator_type")//创建人类型
+                        .append("c.creator_type,")//创建人类型
                         .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")//创建人昵称
                         .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END,")//创建人头像
-                        .append("c.create_type ")
+                        .append("c.creator_type ")
                         .append("FROM company c ")
                         .append("LEFT JOIN user u ON c.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON c.creator=au.id ");
                 builder.append("WHERE ");
-                if (!del) {
+                if (del == 0) {
                     builder.append("c.status=").append(status).append(" AND ");
                 }
                 builder.append("c.del=").append(del);

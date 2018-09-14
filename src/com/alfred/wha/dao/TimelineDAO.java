@@ -190,7 +190,7 @@ public class TimelineDAO extends DAO{
      * @param user_type 用户类型 0：管理员 1：用户
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long event_id,long user_id,int user_type,boolean del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long event_id,long user_id,int user_type,int del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         builder.append("t.id,")
@@ -226,7 +226,7 @@ public class TimelineDAO extends DAO{
                             .append("ORDER BY t.happen_time DESC");
                     break;
                 case QRY_BY_STATUS:
-                    if (del) {
+                    if (del == 1) {
                         builder.append("WHERE t.del=1");
                     }else {
                         builder.append("WHERE t.del=0 AND t.status=").append(status);

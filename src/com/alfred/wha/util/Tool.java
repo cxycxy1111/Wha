@@ -198,9 +198,9 @@ public class Tool {
      * @param key
      * @return
      */
-    public static String transformSessionValueToInteger(HttpSession session,String key) {
+    public static Integer transformSessionValueToInteger(HttpSession session,String key) {
         Object o = session.getAttribute(key);
-        return String.valueOf(o);
+        return Integer.parseInt(String.valueOf(o));
     }
 
     /**

@@ -202,7 +202,7 @@ public class ProductDAO extends DAO{
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long company_id,long product_id,long creator_id,int creator_type,boolean del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long company_id,long product_id,long creator_id,int creator_type,int del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -273,7 +273,7 @@ public class ProductDAO extends DAO{
                         .append("LEFT JOIN user u ON p.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON p.creator=au.id ");
                 builder.append("WHERE ");
-                if (!del) {
+                if (del==0) {
                     builder.append("p.status=").append(status).append(" AND ");
                 }
                 builder.append("p.del=").append(del);

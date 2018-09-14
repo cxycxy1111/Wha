@@ -1,5 +1,6 @@
 package com.alfred.wha.serv;
 
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.dao.UserDAO;
 import com.alfred.wha.dao.UserLoginLogDAO;
 import com.alfred.wha.util.Tool;
@@ -45,9 +46,10 @@ public class UserService extends Service{
      * @param id
      * @return
      */
-    public String delete(long id) {
+    public String delete(long id,long operator,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.delete(id)) {
+                LogDao.recordUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;
@@ -60,9 +62,10 @@ public class UserService extends Service{
      * @param id
      * @return
      */
-    public String lock(long id) {
+    public String lock(long id,long operator,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.lock(id)) {
+                LogDao.recordUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;
@@ -78,8 +81,9 @@ public class UserService extends Service{
      * @param motto
      * @return
      */
-    public String changeNickNameAndMotto(long id,String nick_name,String email,String motto) {
+    public String changeNickNameAndMotto(long id,int operator_type,String nick_name,String email,String motto) {
         if (userDAO.updateInfo(id,nick_name,email,motto)){
+            LogDao.recordUserLog(id,LOG_OPERATE_EDIT,id,operator_type,"新昵称:" + nick_name + ",新邮箱:" + email + ",新签名:" + motto);
             return SUCCESS;
         }
         return FAIL;
@@ -91,8 +95,9 @@ public class UserService extends Service{
      * @param new_pwd
      * @return
      */
-    public String changePwd(long id,String new_pwd) {
+    public String changePwd(long id,int operator_type,String new_pwd) {
         if (userDAO.updatePwd(id,new_pwd)) {
+            LogDao.recordUserLog(id,LOG_OPERATE_CHANGE_PWD,id,operator_type,"新昵称:" + Tool.getMd5FromString(new_pwd));
             return SUCCESS;
         }
         return FAIL;
@@ -103,9 +108,10 @@ public class UserService extends Service{
      * @param id
      * @return
      */
-    public String unlock(long id) {
+    public String unlock(long id,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.unlock(id)) {
+                LogDao.recordUserLog(id,LOG_OPERATE_EDIT,id,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;

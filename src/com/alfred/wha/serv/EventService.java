@@ -1,7 +1,8 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.EventDAO;
-import com.alfred.wha.dao.EventSubcribeDAO;
+import com.alfred.wha.dao.EventSubscribeDAO;
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.util.Tool;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +10,11 @@ import java.util.HashMap;
 public class EventService extends Service{
 
     private EventDAO eventDAO;
-    private EventSubcribeDAO eventSubcribeDAO;
+    private EventSubscribeDAO eventSubcribeDAO;
 
     public EventService() {
         eventDAO = new EventDAO();
-        eventSubcribeDAO = new EventSubcribeDAO();
+        eventSubcribeDAO = new EventSubscribeDAO();
     }
 
     /**
@@ -45,11 +46,12 @@ public class EventService extends Service{
      * @param id
      * @return
      */
-    public String delete(long id) {
+    public String delete(long id,long operator,int operator_type) {
         if (!eventDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (eventDAO.delete(id)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -62,10 +64,11 @@ public class EventService extends Service{
      * @param happen_time
      * @return
      */
-    public String change(long id,boolean is_alow_duplicate,String name,String happen_time) {
+    public String change(long id,long operator,int operator_type,boolean is_alow_duplicate,String name,String happen_time) {
         if (eventDAO.isExist(id,name)) {
             if (is_alow_duplicate){
                 if (eventDAO.change(id,name,happen_time)) {
+                    LogDao.recordCompanyLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time);
                     return SUCCESS;
                 }
                 return FAIL;
@@ -73,6 +76,7 @@ public class EventService extends Service{
             return DUPLICATE;
         }
         if (eventDAO.change(id,name,happen_time)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time);
             return SUCCESS;
         }
         return FAIL;
@@ -83,9 +87,10 @@ public class EventService extends Service{
      * @param id
      * @return
      */
-    public String pass(long id) {
+    public String pass(long id,long operator,int operator_type) {
         if (eventDAO.isExist(id)) {
             if (eventDAO.pass(id)) {
+                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;
@@ -98,9 +103,10 @@ public class EventService extends Service{
      * @param id
      * @return
      */
-    public String reject(long id) {
+    public String reject(long id,long operator,int operator_type) {
         if (eventDAO.isExist(id)) {
             if (eventDAO.reject(id)) {
+                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;

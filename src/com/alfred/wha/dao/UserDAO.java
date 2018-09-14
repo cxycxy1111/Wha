@@ -176,7 +176,7 @@ public class UserDAO extends DAO{
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,long id,boolean del,int status){
+    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,long id,int del,int status){
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (query_type) {
@@ -201,7 +201,7 @@ public class UserDAO extends DAO{
                         .append("del ");
                 builder.append("FROM user ");
                 builder.append("WHERE ");
-                if (!del) {
+                if (del == 0) {
                     builder.append("status=").append(status).append(" AND ");
                 }
                 builder.append("del=").append(del);

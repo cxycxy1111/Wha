@@ -30,7 +30,7 @@ public class AdminUserDAO extends DAO{
      */
     public boolean add(long company_id,String username,String pwd,int type,String email,long creator) {
 
-        String sql = "INSERT INTO user (" +
+        String sql = "INSERT INTO admin_user (" +
                 "company_id," +
                 "user_name," +
                 "pwd," +
@@ -41,10 +41,10 @@ public class AdminUserDAO extends DAO{
                 "email," +
                 "create_time," +
                 "creator," +
-                "icon) VALUES ('" +
+                "icon) VALUES (" +
                 company_id + ",'" +
                 username + "','" +
-                pwd + "'," +
+                Tool.getMd5FromString(pwd) + "'," +
                 "0," +
                 type + "," +
                 "0,'" +
@@ -63,6 +63,16 @@ public class AdminUserDAO extends DAO{
      */
     public boolean delete(long id) {
         String sql = "UPDATE admin_user SET del=1 WHERE id=" + id;
+        return executeSql(sql);
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public boolean recover(long id) {
+        String sql = "UPDATE admin_user SET del=0cover WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -158,7 +168,10 @@ public class AdminUserDAO extends DAO{
      */
     public boolean isExist(String user_name) {
         String sql = "SELECT * FROM admin_user WHERE user_name = '" + user_name + "'";
-        return helper.query(sql).size() != 0;
+        if (helper.query(sql).size() == 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -168,7 +181,10 @@ public class AdminUserDAO extends DAO{
      */
     public boolean isExist(long id) {
         String sql = "SELECT * FROM admin_user WHERE id = " + id;
-        return helper.query(sql).size() != 0;
+        if (helper.query(sql).size() == 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -240,7 +256,7 @@ public class AdminUserDAO extends DAO{
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int query_type, long id, boolean del, int status){
+    private ArrayList<HashMap<String,Object>> complexQuery(int query_type, long id, int del, int status){
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
 
@@ -271,9 +287,9 @@ public class AdminUserDAO extends DAO{
                         .append("au.type,")
                         .append("au.company_id,")
                         .append("c.name ");
-                builder.append("FROM admin_user ");
-                builder.append("LEFT JOIN company c ON au.id=company_id ");
-                if (del) {
+                builder.append("FROM admin_user au ");
+                builder.append("LEFT JOIN company c ON au.company_id=c.id ");
+                if (del == 1) {
                     builder.append("WHERE au.del=1");
                 }else {
                     builder.append("WHERE au.del=0 AND au.status=").append(status);

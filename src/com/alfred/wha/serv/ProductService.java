@@ -1,5 +1,6 @@
 package com.alfred.wha.serv;
 
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.dao.ProductDAO;
 import com.alfred.wha.util.Tool;
 
@@ -38,8 +39,9 @@ public class ProductService extends Service{
      * @param product_id
      * @return
      */
-    public String delete(long product_id) {
+    public String delete(long product_id,long operator,int operator_type) {
         if (productDAO.delete(product_id)) {
+            LogDao.recordProductLog(product_id,LOG_OPERATE_DELETE,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -52,11 +54,12 @@ public class ProductService extends Service{
      * @param product_id
      * @return
      */
-    public String pass(long product_id) {
+    public String pass(long product_id,long operator,int operator_type) {
         if (!productDAO.isExist(product_id)) {
             return QRY_RESULT_EMPTY;
         }
         if (productDAO.pass(product_id)) {
+            LogDao.recordProductLog(product_id,LOG_OPERATE_PASS,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -67,11 +70,12 @@ public class ProductService extends Service{
      * @param product_id
      * @return
      */
-    public String reject(long product_id) {
+    public String reject(long product_id,long operator,int operator_type) {
         if (!productDAO.isExist(product_id)) {
             return QRY_RESULT_EMPTY;
         }
         if (productDAO.reject(product_id)) {
+            LogDao.recordProductLog(product_id,LOG_OPERATE_REJECT,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -84,11 +88,12 @@ public class ProductService extends Service{
      * @param name
      * @return
      */
-    public String changeName(long product_id,long company_id,String name) {
+    public String changeName(long product_id,long operator,int operator_type,long company_id,String name) {
         if (!productDAO.isExist(product_id)) {
             return QRY_RESULT_EMPTY;
         }
         if (productDAO.changeName(product_id,company_id,name)) {
+            LogDao.recordProductLog(product_id,LOG_OPERATE_EDIT,operator,operator_type,"新名称为:" + name);
             return SUCCESS;
         }
         return FAIL;

@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventSubcribeDAO extends DAO{
+public class EventSubscribeDAO extends DAO{
 
     private static final int QRY_BY_EVENT = 1;
     private static final int QRY_BY_SUBCRIBE_USER=2;
     private SQLHelper helper = new SQLHelper();
 
-    public EventSubcribeDAO() {
+    public EventSubscribeDAO() {
 
     }
 
@@ -24,11 +24,11 @@ public class EventSubcribeDAO extends DAO{
      * @return
      */
     public boolean subcribe(long user_id,int user_type,long event_id) {
-        return executeSql("INSERT INTO event_subcribe (" +
+        return executeSql("INSERT INTO event_subscribe (" +
                 "event_id," +
                 "user_id," +
                 "user_type" +
-                "subcribe_time) VALUES (" +
+                "subscribe_time) VALUES (" +
                 event_id + "," +
                 user_id + ","+
                 user_type + ",'" +
@@ -42,7 +42,7 @@ public class EventSubcribeDAO extends DAO{
      * @return
      */
     public boolean unsubcribe(long user_id,long user_type,long event_id) {
-        return executeSql("DELETE FROM event_subcribe " +
+        return executeSql("DELETE FROM event_subscribe " +
                 "WHERE " +
                 "user_id=" + user_id +
                 " AND user_type=" + user_type +
@@ -56,7 +56,7 @@ public class EventSubcribeDAO extends DAO{
      * @return
      */
     public boolean isSubcribe(long user_id,int user_type,long event_id) {
-        return helper.query("SELECT * FROM event_subcribe " +
+        return helper.query("SELECT * FROM event_subscribe " +
                 "WHERE user_id=" + user_id + " AND event_id=" + event_id).size() !=0;
     }
 
@@ -95,7 +95,7 @@ public class EventSubcribeDAO extends DAO{
                         .append("es.user_type,")
                         .append("CASE WHEN es.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
                         .append("CASE WHEN es.user_type=0 THEN au.icon ELSE u.icon END ");
-                builder.append("FROM event_subcribe es ");
+                builder.append("FROM event_subscribe es ");
                 builder.append("LEFT JOIN user u ON es.user_id=u.id ")
                         .append("LEFT JOIN admin_user au ON es.user_id=au.id ");
                 builder.append("WHERE es.event_id=").append(event_id);
@@ -106,7 +106,7 @@ public class EventSubcribeDAO extends DAO{
                         .append("e.subcribe_count,")
                         .append("e.create_time,")
                         .append("e.happen_time ");
-                builder.append("FROM event_subcribe es ");
+                builder.append("FROM event_subscribe es ");
                 builder.append("LEFT JOIN event e ON es.event_id=e.id ");
                 builder.append("WHERE es.user_id=").append(user_id)
                         .append(" AND es.user_type=").append(user_type)

@@ -1,6 +1,7 @@
 package com.alfred.wha.serv;
 
 import com.alfred.wha.dao.AdminUserDAO;
+import com.alfred.wha.dao.LogDao;
 import com.alfred.wha.util.Tool;
 
 import java.io.*;
@@ -12,6 +13,7 @@ public class AdminUserService extends Service{
     private AdminUserDAO adminUserDAO;
 
     public AdminUserService() {
+        super();
         adminUserDAO = new AdminUserDAO();
     }
 
@@ -26,9 +28,6 @@ public class AdminUserService extends Service{
      * @return
      */
     public String add(long company_id,String username,String pwd,int type,String email,long creator) {
-        if (type > adminUserDAO.queryTypeById(creator)) {
-            return AUTHORIZE_FAIL;
-        }
         if (adminUserDAO.isExist(username)) {
             return DUPLICATE;
         }
@@ -63,9 +62,10 @@ public class AdminUserService extends Service{
      * @param id
      * @return
      */
-    public String delete(long id) {
+    public String delete(long id,long operator,int operator_type) {
         if (adminUserDAO.isExist(id)) {
             if (adminUserDAO.delete(id)) {
+                LogDao.recordAdminUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
                 return SUCCESS;
             }
             return FAIL;
@@ -84,7 +84,9 @@ public class AdminUserService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (Tool.getMd5FromString(pwd).equalsIgnoreCase(adminUserDAO.queryPwdByUserName(user_name))) {
-            return Tool.getMd5FromString(id_prefix+ adminUserDAO.queryIdByUserName(user_name) + datasuffix);
+            String id = adminUserDAO.queryIdByUserName(user_name);
+            int type = adminUserDAO.queryTypeById(Long.parseLong(id));
+            return id +"|" + String.valueOf(type);
         }
         return NOT_MATCH;
     }
@@ -96,11 +98,12 @@ public class AdminUserService extends Service{
      * @param id
      * @return
      */
-    private String lock(long id) {
+    public String lock(long id,long operator,int operator_type) {
         if (adminUserDAO.isDel(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (adminUserDAO.lock(id)) {
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -111,11 +114,12 @@ public class AdminUserService extends Service{
      * @param id
      * @return
      */
-    private String unlock(long id) {
+    public String unlock(long id,long operator,int operator_type) {
         if (adminUserDAO.isDel(id)) {
             return QRY_RESULT_EMPTY;
         }
         if (adminUserDAO.unlock(id)) {
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_UNLOCK,operator,operator_type,"");
             return SUCCESS;
         }
         return FAIL;
@@ -129,8 +133,10 @@ public class AdminUserService extends Service{
      * @param motto
      * @return
      */
-    public String changeNickNameAndMotto(long id,String nick_name,String email,String motto) {
+    public String changeNickNameAndMotto(long id,long operator,int operator_type,String nick_name,String email,String motto) {
         if (adminUserDAO.updateInfo(id,nick_name,email,motto)){
+            String log = "新头像:" + nick_name + ",新签名:" + motto + ",新email:" + email;
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_EDIT,id,operator_type,log);
             return SUCCESS;
         }
         return FAIL;
@@ -142,8 +148,9 @@ public class AdminUserService extends Service{
      * @param new_pwd
      * @return
      */
-    public String changePwd(long id,String new_pwd) {
+    public String changePwd(long id,long operator,int operator_type,String new_pwd) {
         if (adminUserDAO.updatePwd(id,new_pwd)) {
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_CHANGE_PWD,operator,operator_type,"新密码:" + Tool.getMd5FromString(new_pwd));
             return SUCCESS;
         }
         return FAIL;
@@ -156,7 +163,7 @@ public class AdminUserService extends Service{
      * @return
      * @throws IOException
      */
-    public String changeIcon(long id,InputStream inStream) throws IOException {
+    public String changeIcon(long id,long operator,int operator_type,InputStream inStream) throws IOException {
         //写入新头像
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串
@@ -183,6 +190,7 @@ public class AdminUserService extends Service{
         //关闭输出流
         fileOutputStream.close();
         adminUserDAO.changeIcon(id,pic_name);
+        LogDao.recordAdminUserLog(id,LOG_OPERATE_CHANGE_ICON,operator,operator_type,"");
         return SUCCESS;
     }
 
