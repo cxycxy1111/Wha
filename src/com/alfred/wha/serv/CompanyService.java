@@ -40,7 +40,7 @@ public class CompanyService extends Service{
      */
     public String delete(long company_id,long operator,int operator_type) {
         if (companyDAO.delete(company_id)) {
-            LogDao.recordCompanyLog(company_id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            LogDao.recordCompanyLog(company_id,LOG_OPERATE_DELETE,operator,operator_type,"删除公司");
             return SUCCESS;
         }
         return FAIL;
@@ -53,7 +53,7 @@ public class CompanyService extends Service{
      */
     public String recover(long company_id,long operator,int operator_type) {
         if (companyDAO.recover(company_id)) {
-            LogDao.recordCompanyLog(company_id,LOG_OPERATE_RECOVER,operator,operator_type,"");
+            LogDao.recordCompanyLog(company_id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复公司");
             return SUCCESS;
         }
         return FAIL;
@@ -86,7 +86,7 @@ public class CompanyService extends Service{
      */
     public String pass(long id,long operator,int operator_type) {
         if (companyDAO.pass(id)) {
-            LogDao.recordCompanyLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
+            LogDao.recordCompanyLog(id,LOG_OPERATE_PASS,operator,operator_type,"审核通过公司");
             return SUCCESS;
         }
         return FAIL;
@@ -99,7 +99,7 @@ public class CompanyService extends Service{
      */
     public String reject(long id,long operator,int operator_type) {
         if (companyDAO.reject(id)) {
-            LogDao.recordCompanyLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
+            LogDao.recordCompanyLog(id,LOG_OPERATE_REJECT,operator,operator_type,"审核驳回公司");
             return SUCCESS;
         }
         return FAIL;

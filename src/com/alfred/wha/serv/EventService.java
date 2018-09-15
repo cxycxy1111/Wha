@@ -51,7 +51,7 @@ public class EventService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (eventDAO.delete(id)) {
-            LogDao.recordEventLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            LogDao.recordEventLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除事件");
             return SUCCESS;
         }
         return FAIL;
@@ -90,7 +90,7 @@ public class EventService extends Service{
     public String pass(long id,long operator,int operator_type) {
         if (eventDAO.isExist(id)) {
             if (eventDAO.pass(id)) {
-                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
+                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"审核通过事件");
                 return SUCCESS;
             }
             return FAIL;
@@ -106,7 +106,7 @@ public class EventService extends Service{
     public String reject(long id,long operator,int operator_type) {
         if (eventDAO.isExist(id)) {
             if (eventDAO.reject(id)) {
-                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
+                LogDao.recordEventLog(id,LOG_OPERATE_PASS,operator,operator_type,"审核驳回事件");
                 return SUCCESS;
             }
             return FAIL;

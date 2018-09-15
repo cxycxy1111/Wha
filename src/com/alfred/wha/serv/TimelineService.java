@@ -51,7 +51,7 @@ public class TimelineService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.delete(id)) {
-            LogDao.recordTimelineLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            LogDao.recordTimelineLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除时间线");
             return SUCCESS;
         }
         return FAIL;
@@ -92,7 +92,7 @@ public class TimelineService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.pass(id)) {
-            LogDao.recordTimelineLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
+            LogDao.recordTimelineLog(id,LOG_OPERATE_PASS,operator,operator_type,"审核通过时间线");
             return SUCCESS;
         }
         return FAIL;
@@ -108,7 +108,7 @@ public class TimelineService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (timelineDAO.reject(id)) {
-            LogDao.recordTimelineLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
+            LogDao.recordTimelineLog(id,LOG_OPERATE_REJECT,operator,operator_type,"审核驳回时间线");
             return SUCCESS;
         }
         return FAIL;

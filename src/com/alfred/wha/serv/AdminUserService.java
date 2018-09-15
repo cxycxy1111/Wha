@@ -65,7 +65,7 @@ public class AdminUserService extends Service{
     public String delete(long id,long operator,int operator_type) {
         if (adminUserDAO.isExist(id)) {
             if (adminUserDAO.delete(id)) {
-                LogDao.recordAdminUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+                LogDao.recordAdminUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除用户");
                 return SUCCESS;
             }
             return FAIL;
@@ -91,8 +91,6 @@ public class AdminUserService extends Service{
         return NOT_MATCH;
     }
 
-
-
     /**
      * 锁定
      * @param id
@@ -103,7 +101,7 @@ public class AdminUserService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (adminUserDAO.lock(id)) {
-            LogDao.recordAdminUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"");
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"锁定管理员");
             return SUCCESS;
         }
         return FAIL;
@@ -119,7 +117,7 @@ public class AdminUserService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (adminUserDAO.unlock(id)) {
-            LogDao.recordAdminUserLog(id,LOG_OPERATE_UNLOCK,operator,operator_type,"");
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_UNLOCK,operator,operator_type,"解锁管理员");
             return SUCCESS;
         }
         return FAIL;
@@ -190,7 +188,7 @@ public class AdminUserService extends Service{
         //关闭输出流
         fileOutputStream.close();
         adminUserDAO.changeIcon(id,pic_name);
-        LogDao.recordAdminUserLog(id,LOG_OPERATE_CHANGE_ICON,operator,operator_type,"");
+        LogDao.recordAdminUserLog(id,LOG_OPERATE_CHANGE_ICON,operator,operator_type,"修改用户头像");
         return SUCCESS;
     }
 

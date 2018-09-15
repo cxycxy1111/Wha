@@ -49,13 +49,30 @@ public class UserService extends Service{
     public String delete(long id,long operator,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.delete(id)) {
-                LogDao.recordUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+                LogDao.recordUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除用户");
                 return SUCCESS;
             }
             return FAIL;
         }
         return QRY_RESULT_EMPTY;
     }
+
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
+    public String recover(long id,long operator,int operator_type) {
+        if (userDAO.isExist(id)) {
+            if (userDAO.recover(id)) {
+                LogDao.recordUserLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复用户");
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
 
     /**
      * 锁定用户
@@ -65,7 +82,7 @@ public class UserService extends Service{
     public String lock(long id,long operator,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.lock(id)) {
-                LogDao.recordUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"");
+                LogDao.recordUserLog(id,LOG_OPERATE_LOCK,operator,operator_type,"锁定用户");
                 return SUCCESS;
             }
             return FAIL;
@@ -108,10 +125,10 @@ public class UserService extends Service{
      * @param id
      * @return
      */
-    public String unlock(long id,int operator_type) {
+    public String unlock(long id,long operator,int operator_type) {
         if (userDAO.isExist(id)) {
             if (userDAO.unlock(id)) {
-                LogDao.recordUserLog(id,LOG_OPERATE_EDIT,id,operator_type,"");
+                LogDao.recordUserLog(id,LOG_OPERATE_UNLOCK,operator,operator_type,"解锁用户");
                 return SUCCESS;
             }
             return FAIL;

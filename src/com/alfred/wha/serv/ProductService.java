@@ -41,7 +41,7 @@ public class ProductService extends Service{
      */
     public String delete(long product_id,long operator,int operator_type) {
         if (productDAO.delete(product_id)) {
-            LogDao.recordProductLog(product_id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            LogDao.recordProductLog(product_id,LOG_OPERATE_DELETE,operator,operator_type,"删除产品");
             return SUCCESS;
         }
         return FAIL;
@@ -59,7 +59,7 @@ public class ProductService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (productDAO.pass(product_id)) {
-            LogDao.recordProductLog(product_id,LOG_OPERATE_PASS,operator,operator_type,"");
+            LogDao.recordProductLog(product_id,LOG_OPERATE_PASS,operator,operator_type,"审核通过产品");
             return SUCCESS;
         }
         return FAIL;
@@ -75,7 +75,7 @@ public class ProductService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (productDAO.reject(product_id)) {
-            LogDao.recordProductLog(product_id,LOG_OPERATE_REJECT,operator,operator_type,"");
+            LogDao.recordProductLog(product_id,LOG_OPERATE_REJECT,operator,operator_type,"审核驳回产品");
             return SUCCESS;
         }
         return FAIL;

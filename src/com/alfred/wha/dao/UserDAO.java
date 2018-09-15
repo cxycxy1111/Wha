@@ -57,6 +57,16 @@ public class UserDAO extends DAO{
     }
 
     /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public boolean recover(long id) {
+        String sql = "UPDATE user SET del=0 WHERE id=" + id;
+        return executeSql(sql);
+    }
+
+    /**
      * 锁定
      * @param id
      * @return

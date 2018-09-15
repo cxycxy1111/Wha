@@ -57,7 +57,7 @@ public class CaseService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.delete(id)) {
-            LogDao.recordCaseLog(id,LOG_OPERATE_DELETE,operator,operator_type,"");
+            LogDao.recordCaseLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除案例");
             return SUCCESS;
         }
         return FAIL;
@@ -73,7 +73,7 @@ public class CaseService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.recover(id)) {
-            LogDao.recordCaseLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"");
+            LogDao.recordCaseLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复案例");
             return SUCCESS;
         }
         return FAIL;
@@ -88,7 +88,7 @@ public class CaseService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.pass(id)) {
-            LogDao.recordCaseLog(id,LOG_OPERATE_PASS,operator,operator_type,"");
+            LogDao.recordCaseLog(id,LOG_OPERATE_PASS,operator,operator_type,"审核通过案例");
             return SUCCESS;
         }
         return FAIL;
@@ -104,7 +104,7 @@ public class CaseService extends Service{
             return QRY_RESULT_EMPTY;
         }
         if (caseDAO.reject(id)) {
-            LogDao.recordCaseLog(id,LOG_OPERATE_REJECT,operator,operator_type,"");
+            LogDao.recordCaseLog(id,LOG_OPERATE_REJECT,operator,operator_type,"审核驳回案例");
             return SUCCESS;
         }
         return FAIL;
