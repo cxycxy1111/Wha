@@ -136,8 +136,8 @@ public class ProductDAO extends DAO{
      * @param product_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByProduct(long product_id) {
-        return complexQuery(QRY_BY_PRODUCT,NULL,product_id,NULL,NULL,DEL_NO,STATUS_PASSED);
+    public ArrayList<HashMap<String,Object>> queryByProduct(long product_id,int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,product_id,NULL,NULL,DEL_NO,STATUS_PASSED);
     }
 
     /**
@@ -145,8 +145,8 @@ public class ProductDAO extends DAO{
      * @param company_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCompany(long company_id) {
-        return complexQuery(QRY_BY_PRODUCT,company_id,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
+    public ArrayList<HashMap<String,Object>> queryByCompany(long company_id,int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,company_id,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
     }
 
     /**
@@ -155,40 +155,40 @@ public class ProductDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
-        return complexQuery(QRY_BY_PRODUCT,NULL,NULL,creator,creator_type,DEL_NO,STATUS_PASSED);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type,int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,creator,creator_type,DEL_NO,STATUS_PASSED);
     }
 
     /**
      * 查询已通过的产品
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryPassed() {
-        return complexQuery(QRY_BY_PRODUCT,NULL,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
+    public ArrayList<HashMap<String,Object>> queryPassed(int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
     }
 
     /**
      * 查询未审核的产品
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryUncheck() {
-        return complexQuery(QRY_BY_PRODUCT,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
+    public ArrayList<HashMap<String,Object>> queryUncheck(int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
     }
 
     /**
      * 查询未通过的产品
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryRejected() {
-        return complexQuery(QRY_BY_PRODUCT,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
+    public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
     }
 
     /**
      * 查询已删除的产品
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_BY_PRODUCT,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
     }
 
     /**
@@ -202,7 +202,7 @@ public class ProductDAO extends DAO{
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long company_id,long product_id,long creator_id,int creator_type,int del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long company_id,long product_id,long creator_id,int creator_type,int del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -280,6 +280,7 @@ public class ProductDAO extends DAO{
                 break;
             default:break;
         }
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

@@ -207,9 +207,9 @@ public class CaseService extends Service{
      * @param user_type
      * @return
      */
-    public String querySelfSubcribe(long user_id, int user_type) {
+    public String querySelfSubcribe(long user_id, int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.querySelfSubcribe(user_id,user_type);
+        arrayList = caseDAO.querySelfSubcribe(user_id,user_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -221,9 +221,9 @@ public class CaseService extends Service{
      * @param user_id
      * @return
      */
-    public String querySelfCreate(long user_id,int user_type) {
+    public String querySelfCreate(long user_id,int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.querySelfCreate(user_id,user_type);
+        arrayList = caseDAO.querySelfCreate(user_id,user_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -235,9 +235,9 @@ public class CaseService extends Service{
      * @param case_id
      * @return
      */
-    public String queryDetail(long case_id,long user_id,int user_type) {
+    public String queryDetail(long case_id,long user_id,int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.queryDetail(case_id);
+        arrayList = caseDAO.queryDetail(case_id,page_no,length);
         if (arrayList.size() != 0) {
             caseReadDAO.add(case_id,user_id,user_type);
             caseDAO.updateViewCount(case_id);
@@ -250,9 +250,9 @@ public class CaseService extends Service{
      * 查询未审核的案例列表
      * @return
      */
-    public String queryUnchecked() {
+    public String queryUnchecked(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.queryUnchecked();
+        arrayList = caseDAO.queryUnchecked(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -263,9 +263,9 @@ public class CaseService extends Service{
      * 查询已删除的案例列表
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.queryDeleted();
+        arrayList = caseDAO.queryDeleted(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -276,9 +276,9 @@ public class CaseService extends Service{
      * 查询已通过的案例列表
      * @return
      */
-    public String queryPassed() {
+    public String queryPassed(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.queryPassed();
+        arrayList = caseDAO.queryPassed(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -289,9 +289,9 @@ public class CaseService extends Service{
      * 查询未通过的案例列表
      * @return
      */
-    public String queryRejected() {
+    public String queryRejected(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseDAO.queryRejected();
+        arrayList = caseDAO.queryRejected(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

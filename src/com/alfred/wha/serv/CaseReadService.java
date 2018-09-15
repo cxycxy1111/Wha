@@ -19,9 +19,9 @@ public class CaseReadService extends Service{
      * @param case_id
      * @return
      */
-    public String queryByCase(long case_id) {
+    public String queryByCase(long case_id,int page_no,int lenght) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseReadDAO.queryByCase(case_id);
+        arrayList = caseReadDAO.queryByCase(case_id,page_no,lenght);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -34,9 +34,9 @@ public class CaseReadService extends Service{
      * @param user_type
      * @return
      */
-    public String queryByUser(long user_id,int user_type) {
+    public String queryByUser(long user_id,int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseReadDAO.queryByUser(user_id,user_type);
+        arrayList = caseReadDAO.queryByUser(user_id,user_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

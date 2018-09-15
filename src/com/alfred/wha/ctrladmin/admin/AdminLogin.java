@@ -36,10 +36,8 @@ public class AdminLogin extends BaseServlet {
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
-        super.dealWithSessionDead(request, response, session, out);
         String user_name = request.getParameter("user_name");
         String password = request.getParameter("pwd");
-
         String result = adminUserService.loginCheck(user_name,password);
         if (result.startsWith("{")){
             out.append(result);

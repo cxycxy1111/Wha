@@ -19,9 +19,9 @@ public class EventSubscribeService extends Service{
      * @param user_id
      * @return
      */
-    public String queryByUser(long user_id, int user_type) {
+    public String queryByUser(long user_id, int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventSubcribeDAO.queryByUser(user_id,user_type);
+        arrayList = eventSubcribeDAO.queryByUser(user_id,user_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -33,9 +33,9 @@ public class EventSubscribeService extends Service{
      * @param event_id
      * @return
      */
-    public String queryByEvent(long event_id) {
+    public String queryByEvent(long event_id,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventSubcribeDAO.queryByEvent(event_id);
+        arrayList = eventSubcribeDAO.queryByEvent(event_id,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

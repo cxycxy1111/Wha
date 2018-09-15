@@ -196,8 +196,8 @@ public class CaseDAO extends DAO{
      * @param user_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> querySelfSubcribe(long user_id,int user_type) {
-        return complexQuery(QRY_SELF_SUBCRIBE,user_id,user_type,NULL,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> querySelfSubcribe(long user_id,int user_type,int page_no,int length) {
+        return complexQuery(QRY_SELF_SUBCRIBE,page_no,length,user_id,user_type,NULL,STATUS_PASSED,DEL_NO);
     }
 
     /**
@@ -205,8 +205,8 @@ public class CaseDAO extends DAO{
      * @param user_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> querySelfCreate(long user_id,int user_type) {
-        return complexQuery(QRY_SELF_CREATE,user_id,user_type,NULL,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> querySelfCreate(long user_id,int user_type,int page_no,int length) {
+        return complexQuery(QRY_SELF_CREATE,page_no,length,user_id,user_type,NULL,STATUS_PASSED,DEL_NO);
     }
 
     /**
@@ -214,40 +214,40 @@ public class CaseDAO extends DAO{
      * @param case_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryDetail(long case_id) {
-        return complexQuery(QRY_DETAIL,NULL,USER_TYPE_MANAGER,case_id,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryDetail(long case_id,int page_no,int length) {
+        return complexQuery(QRY_DETAIL,page_no,length,NULL,USER_TYPE_MANAGER,case_id,STATUS_PASSED,DEL_NO);
     }
 
     /**
      * 查询未审核的案例列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryUnchecked() {
-        return complexQuery(QRY_STATUS,NULL,USER_TYPE_MANAGER,NULL,STATUS_NEEDCHECK,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryUnchecked(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,USER_TYPE_MANAGER,NULL,STATUS_NEEDCHECK,DEL_NO);
     }
 
     /**
      * 查询已删除的案例列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_STATUS,NULL,USER_TYPE_MANAGER,NULL,STATUS_PASSED,DEL_YES);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,USER_TYPE_MANAGER,NULL,STATUS_PASSED,DEL_YES);
     }
 
     /**
      * 查询已通过的案例列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryPassed() {
-        return complexQuery(QRY_STATUS,NULL,USER_TYPE_MANAGER,NULL,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryPassed(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,USER_TYPE_MANAGER,NULL,STATUS_PASSED,DEL_NO);
     }
 
     /**
      * 查询未通过的案例列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryRejected() {
-        return complexQuery(QRY_STATUS,NULL,USER_TYPE_MANAGER,NULL,STATUS_REJECTED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,USER_TYPE_MANAGER,NULL,STATUS_REJECTED,DEL_NO);
     }
 
     /**
@@ -258,7 +258,7 @@ public class CaseDAO extends DAO{
      * @param case_id
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long user_id,int user_type,long case_id,int status,int del) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long user_id,int user_type,long case_id,int status,int del) {
         StringBuilder builder = new StringBuilder();
         if (queryType == QRY_DETAIL) {
             builder.append("SELECT c.id,")//案例ID
@@ -324,7 +324,8 @@ public class CaseDAO extends DAO{
                     break;
                 default:break;
             }
-            builder.append(" ORDER BY c.id DESC");
+            builder.append(" ORDER BY c.id DESC ");
+            builder.append("LIMIT ").append((page_no-1)*length).append(",").append(length);
         }
         return helper.query(builder.toString());
     }

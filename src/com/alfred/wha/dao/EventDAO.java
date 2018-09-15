@@ -55,6 +55,15 @@ public class EventDAO extends DAO{
     }
 
     /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public boolean recover(long id) {
+        return executeSql("UPDATE event SET del=0 WHERE id=" + id);
+    }
+
+    /**
      * 修改
      * @param id
      * @param name
@@ -120,8 +129,8 @@ public class EventDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
-        return complexQuery(QRY_BY_CREATOR,STATUS_IGNORE,DEL_NO,NULL,creator,creator_type);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type,int page_no,int length) {
+        return complexQuery(QRY_BY_CREATOR,page_no,length,STATUS_IGNORE,DEL_NO,NULL,creator,creator_type);
     }
 
     /**
@@ -129,40 +138,40 @@ public class EventDAO extends DAO{
      * @param event_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id) {
-        return complexQuery(QRY_BY_EVENT,STATUS_NORMAL,DEL_NO,event_id,NULL,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id,int page_no,int length) {
+        return complexQuery(QRY_BY_EVENT,page_no,length,STATUS_NORMAL,DEL_NO,event_id,NULL,USER_TYPE_MANAGER);
     }
 
     /**
      * 查询未通过
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryRejected() {
-        return complexQuery(QRY_BY_STATUS,STATUS_REJECTED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,STATUS_REJECTED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
     }
 
     /**
      * 查询已通过
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryPassed() {
-        return complexQuery(QRY_BY_STATUS,STATUS_PASSED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryPassed(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,STATUS_PASSED,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
     }
 
     /**
      * 查询未审核
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryUncheck() {
-        return complexQuery(QRY_BY_STATUS,STATUS_NEEDCHECK,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryUncheck(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,STATUS_NEEDCHECK,DEL_NO,NULL,NULL,USER_TYPE_MANAGER);
     }
 
     /**
      * 查询已删除
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_BY_STATUS,STATUS_PASSED,DEL_YES,NULL,NULL,USER_TYPE_MANAGER);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,STATUS_PASSED,DEL_YES,NULL,NULL,USER_TYPE_MANAGER);
     }
     /**
      * 复杂查询
@@ -174,7 +183,7 @@ public class EventDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int status,int del,long event_id,long creator_id,int creator_type) {
+    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,int status,int del,long event_id,long creator_id,int creator_type) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -231,7 +240,8 @@ public class EventDAO extends DAO{
                 } else {
                     builder.append(" e.del=").append(del);
                 }
-                builder.append(" ORDER BY e.id DESC");
+                builder.append(" ORDER BY e.id DESC ");
+                builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
             default:break;
         }
         return helper.query(builder.toString());

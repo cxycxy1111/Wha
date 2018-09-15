@@ -33,12 +33,13 @@ public class CaseReadQryByUser extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long user_id = Tool.requestToLong(request,"id");
         int user_type = Tool.requestToInt(request,"type");
-        out.append(caseReadService.queryByUser(user_id,user_type));
+        int page_no = Tool.requestToInt(request,"page_no");
+        out.append(caseReadService.queryByUser(user_id,user_type,page_no,10));
     }
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

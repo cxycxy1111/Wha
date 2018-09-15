@@ -32,12 +32,13 @@ public class EventSubscribeQryByEvent extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long event = Tool.requestToLong(request,"id");
-        out.append(eventSubscribeService.queryByEvent(event));
+        int page_no = Tool.requestToInt(request,"page_no");
+        out.append(eventSubscribeService.queryByEvent(event,page_no,10));
     }
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

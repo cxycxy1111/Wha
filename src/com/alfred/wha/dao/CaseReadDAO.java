@@ -33,8 +33,8 @@ public class CaseReadDAO extends DAO{
      * @param case_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCase(long case_id) {
-        return complexQuery(QRY_BY_CASE,case_id,0,0);
+    public ArrayList<HashMap<String,Object>> queryByCase(long case_id,int page_no,int length) {
+        return complexQuery(QRY_BY_CASE,page_no,length,case_id,0,0);
     }
 
     /**
@@ -43,8 +43,8 @@ public class CaseReadDAO extends DAO{
      * @param user_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type) {
-        return complexQuery(QRY_BY_USER,0,user_id,user_type);
+    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type,int page_no,int length) {
+        return complexQuery(QRY_BY_USER,page_no,length,0,user_id,user_type);
     }
 
     /**
@@ -55,7 +55,7 @@ public class CaseReadDAO extends DAO{
      * @param user_type 用户类型 0管理员 1用户
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long case_id,long user_id,int user_type) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long case_id,long user_id,int user_type) {
         StringBuilder builder = new StringBuilder();
         switch (queryType) {
             case QRY_BY_CASE://按案例ID查询
@@ -82,7 +82,8 @@ public class CaseReadDAO extends DAO{
                                 "LEFT JOIN user u ON c.creator=u.id ");
                 builder.append("WHERE cr.user_id=").append(user_id).append(" AND user_type=").append(user_type);
         }
-        builder.append(" ORDER BY create_time DESC");
+        builder.append(" ORDER BY cr.id DESC ");
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

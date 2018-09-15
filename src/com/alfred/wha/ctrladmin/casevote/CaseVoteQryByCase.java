@@ -33,12 +33,13 @@ public class CaseVoteQryByCase extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long id = Tool.requestToLong(request,"id");
         int vote_type = Tool.requestToInt(request,"vote_type");
-        out.append(caseVoteService.queryByCase(id,vote_type));
+        int page_no = Tool.requestToInt(request,"page_no");
+        out.append(caseVoteService.queryByCase(id,vote_type,page_no,10));
     }
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

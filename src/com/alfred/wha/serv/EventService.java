@@ -58,6 +58,22 @@ public class EventService extends Service{
     }
 
     /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public String recover(long id,long operator,int operator_type) {
+        if (!eventDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        if (eventDAO.recover(id)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复事件");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
      * 修改
      * @param id
      * @param name
@@ -152,9 +168,9 @@ public class EventService extends Service{
      * @param creator_type
      * @return
      */
-    public String queryByCreator(long creator, int creator_type) {
+    public String queryByCreator(long creator, int creator_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryByCreator(creator,creator_type);
+        arrayList = eventDAO.queryByCreator(creator,creator_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -168,7 +184,7 @@ public class EventService extends Service{
      */
     public String queryByEvent(long event_id) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryByEvent(event_id);
+        arrayList = eventDAO.queryByEvent(event_id,1,1);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -179,9 +195,9 @@ public class EventService extends Service{
      * 查询未通过
      * @return
      */
-    public String queryRejected() {
+    public String queryRejected(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryRejected();
+        arrayList = eventDAO.queryRejected(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -192,9 +208,9 @@ public class EventService extends Service{
      * 查询已通过
      * @return
      */
-    public String queryPassed() {
+    public String queryPassed(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryPassed();
+        arrayList = eventDAO.queryPassed(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -205,9 +221,9 @@ public class EventService extends Service{
      * 查询未审核
      * @return
      */
-    public String queryUncheck() {
+    public String queryUncheck(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryUncheck();
+        arrayList = eventDAO.queryUncheck(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -218,9 +234,9 @@ public class EventService extends Service{
      * 查询已删除
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = eventDAO.queryDeleted();
+        arrayList = eventDAO.queryDeleted(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

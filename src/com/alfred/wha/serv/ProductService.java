@@ -106,7 +106,7 @@ public class ProductService extends Service{
      */
     public String queryByProduct(long product_id) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryByProduct(product_id);
+        arrayList = productDAO.queryByProduct(product_id,1,1);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -118,9 +118,9 @@ public class ProductService extends Service{
      * @param company_id
      * @return
      */
-    public String queryByCompany(long company_id) {
+    public String queryByCompany(long company_id,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryByCompany(company_id);
+        arrayList = productDAO.queryByCompany(company_id,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -133,9 +133,9 @@ public class ProductService extends Service{
      * @param creator_type
      * @return
      */
-    public String queryByCreator(long creator,int creator_type) {
+    public String queryByCreator(long creator,int creator_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryByCreator(creator,creator_type);
+        arrayList = productDAO.queryByCreator(creator,creator_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -146,9 +146,9 @@ public class ProductService extends Service{
      * 查询已通过的产品
      * @return
      */
-    public String queryPassed() {
+    public String queryPassed(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryPassed();
+        arrayList = productDAO.queryPassed(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -159,9 +159,9 @@ public class ProductService extends Service{
      * 查询未审核的产品
      * @return
      */
-    public String queryUncheck() {
+    public String queryUncheck(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryPassed();
+        arrayList = productDAO.queryPassed(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -172,9 +172,9 @@ public class ProductService extends Service{
      * 查询未通过的产品
      * @return
      */
-    public String queryRejected() {
+    public String queryRejected(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryRejected();
+        arrayList = productDAO.queryRejected(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -185,9 +185,9 @@ public class ProductService extends Service{
      * 查询已删除的产品
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryDeleted();
+        arrayList = productDAO.queryDeleted(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

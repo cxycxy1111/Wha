@@ -48,7 +48,7 @@ public class BaseServlet extends HttpServlet {
     }
 
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
-
+        out.append(SESSION_EXPIRED);
     }
 
 }

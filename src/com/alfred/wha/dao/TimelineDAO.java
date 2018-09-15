@@ -60,6 +60,16 @@ public class TimelineDAO extends DAO{
     }
 
     /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public boolean recover(long id) {
+        return executeSql("UPDATE timeline SET del=0 " +
+                "WHERE id=" + id);
+    }
+
+    /**
      * 更新时间线
      * @param id
      * @param title
@@ -144,8 +154,8 @@ public class TimelineDAO extends DAO{
      * @param event_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id) {
-        return complexQuery(QRY_BY_EVENT,NULL,event_id,NULL,NULL,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id,int page_no,int length) {
+        return complexQuery(QRY_BY_EVENT,page_no,length,NULL,event_id,NULL,NULL,DEL_NO,STATUS_NORMAL);
     }
 
     /**
@@ -154,8 +164,8 @@ public class TimelineDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long creator_id,int creator_type) {
-        return complexQuery(QRY_BY_CREATOR,NULL,NULL,creator_id,creator_type,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator_id,int creator_type,int page_no,int length) {
+        return complexQuery(QRY_BY_CREATOR,page_no,length,NULL,NULL,creator_id,creator_type,DEL_NO,STATUS_NORMAL);
     }
 
     /**
@@ -163,34 +173,35 @@ public class TimelineDAO extends DAO{
      * @param timeline
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByTimeline(long timeline) {
-        return complexQuery(QRY_BY_DETAIL,timeline,NULL,NULL,NULL,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryByTimeline(long timeline,int page_no,int length) {
+        return complexQuery(QRY_BY_DETAIL,page_no,length,timeline,NULL,NULL,NULL,DEL_NO,STATUS_NORMAL);
     }
 
-    public ArrayList<HashMap<String,Object>> queryNormal() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryNormal(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NORMAL);
     }
 
-    public ArrayList<HashMap<String,Object>> queryRejected() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
+    public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
     }
 
-    public ArrayList<HashMap<String,Object>> queryUnchecked() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
+    public ArrayList<HashMap<String,Object>> queryUnchecked(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
     }
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
     }
 
     /**
      * 复杂查询
      * @param queryType 查询类型 1：通过事件查询时间线 2：通过创建人查询时间线 3：通过时间线ID查询
-     * @param user_id
+     * @param id
+     * @param creator
      * @param event_id
-     * @param user_type 用户类型 0：管理员 1：用户
+     * @param creator_type 用户类型 0：管理员 1：用户
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long event_id,long user_id,int user_type,int del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long id,long event_id,long creator,int creator_type,int del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         builder.append("t.id,")
@@ -212,8 +223,8 @@ public class TimelineDAO extends DAO{
             }
             switch (queryType) {//条件
                 case QRY_BY_CREATOR:
-                    builder.append(" WHERE t.creator=").append(user_id)
-                            .append(" AND creator_type=").append(user_type)
+                    builder.append(" WHERE t.creator=").append(creator)
+                            .append(" AND creator_type=").append(creator_type)
                             .append(" ORDER BY create_time DESC");
                     break;
                 case QRY_BY_EVENT:
@@ -253,6 +264,7 @@ public class TimelineDAO extends DAO{
                     .append(id)
                     .append(" ORDER BY create_time DESC");
         }
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

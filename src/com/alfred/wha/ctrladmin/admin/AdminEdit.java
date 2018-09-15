@@ -41,6 +41,6 @@ public class AdminEdit extends BaseServlet {
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

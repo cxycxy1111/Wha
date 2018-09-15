@@ -65,7 +65,23 @@ public class AdminUserService extends Service{
     public String delete(long id,long operator,int operator_type) {
         if (adminUserDAO.isExist(id)) {
             if (adminUserDAO.delete(id)) {
-                LogDao.recordAdminUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除用户");
+                LogDao.recordAdminUserLog(id,LOG_OPERATE_DELETE,operator,operator_type,"删除管理员");
+                return SUCCESS;
+            }
+            return FAIL;
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 删除管理员
+     * @param id
+     * @return
+     */
+    public String recover(long id,long operator,int operator_type) {
+        if (adminUserDAO.isExist(id)) {
+            if (adminUserDAO.recover(id)) {
+                LogDao.recordAdminUserLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复管理员");
                 return SUCCESS;
             }
             return FAIL;
@@ -196,9 +212,9 @@ public class AdminUserService extends Service{
      * 查询已通过的列表
      * @return
      */
-    public String queryNormal() {
+    public String queryNormal(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = adminUserDAO.queryNormal();
+        arrayList = adminUserDAO.queryNormal(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }
@@ -209,9 +225,9 @@ public class AdminUserService extends Service{
      * 查询已删除的列表
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = adminUserDAO.queryDeleted();
+        arrayList = adminUserDAO.queryDeleted(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }
@@ -222,9 +238,9 @@ public class AdminUserService extends Service{
      * 查询已锁定的列表
      * @return
      */
-    public String queryLocked() {
+    public String queryLocked(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = adminUserDAO.queryLocked();
+        arrayList = adminUserDAO.queryLocked(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }
@@ -240,7 +256,7 @@ public class AdminUserService extends Service{
         if (!adminUserDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
-        return Tool.transformFromCollection(adminUserDAO.queryDetail(id));
+        return Tool.transformFromCollection(adminUserDAO.queryDetail(id,0,1));
     }
 
 }

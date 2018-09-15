@@ -20,9 +20,9 @@ public class CaseVoteService extends Service{
      * @param user_type
      * @return
      */
-    public String queryByCreator(long user_id, int user_type) {
+    public String queryByCreator(long user_id, int user_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseVoteDAO.queryByCreator(user_id,user_type);
+        arrayList = caseVoteDAO.queryByCreator(user_id,user_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -35,9 +35,9 @@ public class CaseVoteService extends Service{
      * @param vote_type
      * @return
      */
-    public String queryByCase(long case_id,int vote_type) {
+    public String queryByCase(long case_id,int vote_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = caseVoteDAO.queryByCase(case_id,vote_type);
+        arrayList = caseVoteDAO.queryByCase(case_id,vote_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

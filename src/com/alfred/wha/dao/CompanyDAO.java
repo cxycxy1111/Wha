@@ -116,8 +116,8 @@ public class CompanyDAO extends DAO{
      * @param id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCompany(long id) {
-        return complexQuery(QRY_BY_COMPANY,id,NULL,NULL,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryByCompany(long id,int page_no,int length) {
+        return complexQuery(QRY_BY_COMPANY,page_no,length,id,NULL,NULL,STATUS_PASSED,DEL_NO);
     }
 
 
@@ -127,40 +127,40 @@ public class CompanyDAO extends DAO{
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type) {
-        return complexQuery(QRY_BY_CREATOR,NULL,creator,creator_type,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type,int page_no,int length) {
+        return complexQuery(QRY_BY_CREATOR,page_no,length,NULL,creator,creator_type,STATUS_PASSED,DEL_NO);
     }
 
     /**
      * 待审核的公司列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryUnchecked() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_NEEDCHECK,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryUnchecked(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,STATUS_NEEDCHECK,DEL_NO);
     }
 
     /**
      * 已通过的公司列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryPassed() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_PASSED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryPassed(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,STATUS_PASSED,DEL_NO);
     }
 
     /**
      * 未通过的公司列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryRejected() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_REJECTED,DEL_NO);
+    public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,STATUS_REJECTED,DEL_NO);
     }
 
     /**
      * 已删除的公司列表
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_BY_STATUS,NULL,NULL,NULL,STATUS_PASSED,DEL_YES);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,STATUS_PASSED,DEL_YES);
     }
 
     /**
@@ -170,7 +170,7 @@ public class CompanyDAO extends DAO{
      * @param del
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long id,long creator,int creator_type,int status,int del) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long id,long creator,int creator_type,int status,int del) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");//公司ID
         switch (queryType) {
@@ -225,7 +225,8 @@ public class CompanyDAO extends DAO{
                 break;
             default:break;
         }
-        builder.append(" ORDER BY c.name");
+        builder.append(" ORDER BY c.name ");
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

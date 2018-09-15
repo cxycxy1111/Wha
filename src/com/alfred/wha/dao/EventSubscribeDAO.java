@@ -65,8 +65,8 @@ public class EventSubscribeDAO extends DAO{
      * @param user_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type) {
-        return complexQuery(QRY_BY_SUBCRIBE_USER,user_id,user_type,0);
+    public ArrayList<HashMap<String,Object>> queryByUser(long user_id,int user_type,int page_no,int length) {
+        return complexQuery(QRY_BY_SUBCRIBE_USER,page_no,length,user_id,user_type,0);
     }
 
     /**
@@ -74,8 +74,8 @@ public class EventSubscribeDAO extends DAO{
      * @param event_id
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id) {
-        return complexQuery(QRY_BY_EVENT,0,0,event_id);
+    public ArrayList<HashMap<String,Object>> queryByEvent(long event_id,int page_no,int length) {
+        return complexQuery(QRY_BY_EVENT,page_no,length,0,0,event_id);
     }
 
     /**
@@ -86,7 +86,7 @@ public class EventSubscribeDAO extends DAO{
      * @param event_id
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,long user_id,int user_type,long event_id) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long user_id,int user_type,long event_id) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -114,7 +114,8 @@ public class EventSubscribeDAO extends DAO{
                 break;
             default:break;
         }
-        builder.append(" ORDER BY es.create_time DESC");
+        builder.append(" ORDER BY es.id DESC");
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

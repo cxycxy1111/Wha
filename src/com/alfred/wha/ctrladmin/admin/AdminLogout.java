@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "AdminLogout",urlPatterns = "/admin/admin/logout")
+// http:localhost:8080/admin/admin/logout
 public class AdminLogout extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +33,6 @@ public class AdminLogout extends BaseServlet {
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
-        super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+        out.append(SUCCESS);
     }
 }

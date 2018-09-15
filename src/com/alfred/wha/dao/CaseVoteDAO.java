@@ -98,8 +98,8 @@ public class CaseVoteDAO extends DAO{
      * @param user_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long user_id,int user_type) {
-        return complexQuery(QRY_BY_USER,NULL,user_id,user_type,-1);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long user_id,int user_type,int page_no,int length) {
+        return complexQuery(QRY_BY_USER,page_no,length,NULL,user_id,user_type,-1);
     }
 
     /**
@@ -108,8 +108,8 @@ public class CaseVoteDAO extends DAO{
      * @param vote_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCase(long case_id,int vote_type) {
-        return complexQuery(QRY_BY_CASE,case_id,NULL,USER_TYPE_MANAGER,vote_type);
+    public ArrayList<HashMap<String,Object>> queryByCase(long case_id,int vote_type,int page_no,int length) {
+        return complexQuery(QRY_BY_CASE,page_no,length,case_id,NULL,USER_TYPE_MANAGER,vote_type);
     }
 
     /**
@@ -121,7 +121,7 @@ public class CaseVoteDAO extends DAO{
      * @param vote_type 0赞同 1反对
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,long case_id,long user_id,int user_type,int vote_type) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,int page_no,int length,long case_id,long user_id,int user_type,int vote_type) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
 
@@ -157,12 +157,12 @@ public class CaseVoteDAO extends DAO{
             default:break;
         }
         if (vote_type !=-1) {
-            builder.append(" AND vote_type=").append(vote_type);
+            builder.append(" AND cv.vote_type=").append(vote_type);
         }
-        builder.append(" ORDER BY last_modify_time DESC");
+        builder.append(" ORDER BY cv.last_modify_time DESC ");
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
-
 
     /**
      * 是否曾经赞成或反对

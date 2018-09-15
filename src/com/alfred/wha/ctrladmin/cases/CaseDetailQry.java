@@ -31,13 +31,14 @@ public class CaseDetailQry extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
+        int page_no = Tool.requestToInt(request,"page_no");
         long case_id = Tool.transformSessionValueToLong(session,"id");
-        out.append(caseService.queryDetail(case_id,current_user,current_user_type));
+        out.append(caseService.queryDetail(case_id,current_user,current_user_type,page_no,10));
     }
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

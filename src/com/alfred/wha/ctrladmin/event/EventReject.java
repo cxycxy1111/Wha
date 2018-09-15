@@ -1,7 +1,8 @@
-package com.alfred.wha.ctrluser;
+package com.alfred.wha.ctrladmin.event;
 
-import com.alfred.wha.serv.UserService;
+import com.alfred.wha.serv.EventService;
 import com.alfred.wha.util.BaseServlet;
+import com.alfred.wha.util.Tool;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,15 +12,16 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "UserLogin",urlPatterns = "/user/user/login")
+@WebServlet(name = "EventReject",urlPatterns = "/admin/event/reject")
 /**
- * http://localhost:8080/admin/user/lock?id=1
+ * http://localhost:8080/admin/event/reject?id=1
  */
-public class UserLogin extends BaseServlet {
+public class EventReject extends BaseServlet {
     private static final long serialVersionUID = 1L;
-    private UserService userService = new UserService();
+    private EventService eventService = new EventService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,22 +31,13 @@ public class UserLogin extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        out.append(SUCCESS);
+        long id = Tool.requestToLong(request,"id");
+        out.append(eventService.reject(id,current_user,current_user_type));
     }
 
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        String user_name = request.getParameter("user_name");
-        String password = request.getParameter("pwd");
-        String result = userService.loginCheck(user_name,password,"","","","","");
-        if (result.startsWith("{")){
-            out.append(result);
-        }else {
-            String [] strings = result.split("|");
-            session.setAttribute("id",strings[0]);
-            session.setAttribute("type",strings[2]);
-            out.append(BaseServlet.SUCCESS);
-        }
+
     }
 }

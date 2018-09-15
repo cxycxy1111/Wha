@@ -111,11 +111,11 @@ public class CompanyService extends Service{
      * @param id
      * @return
      */
-    public String queryByCompany(long id) {
+    public String queryByCompany(long id,int page_no,int length) {
         if (!companyDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
-        return Tool.transformFromCollection(companyDAO.queryByCompany(id));
+        return Tool.transformFromCollection(companyDAO.queryByCompany(id,page_no,length));
     }
 
 
@@ -125,9 +125,9 @@ public class CompanyService extends Service{
      * @param creator_type
      * @return
      */
-    public String queryByCreator(long creator,int creator_type) {
+    public String queryByCreator(long creator,int creator_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryByCreator(creator,creator_type);
+        arrayList = companyDAO.queryByCreator(creator,creator_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -138,9 +138,9 @@ public class CompanyService extends Service{
      * 待审核的公司列表
      * @return
      */
-    public String queryUnchecked() {
+    public String queryUnchecked(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryUnchecked();
+        arrayList = companyDAO.queryUnchecked(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -151,9 +151,9 @@ public class CompanyService extends Service{
      * 已通过的公司列表
      * @return
      */
-    public String queryPassed() {
+    public String queryPassed(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryPassed();
+        arrayList = companyDAO.queryPassed(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -164,9 +164,9 @@ public class CompanyService extends Service{
      * 未通过的公司列表
      * @return
      */
-    public String queryRejected() {
+    public String queryRejected(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryRejected();
+        arrayList = companyDAO.queryRejected(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -177,9 +177,9 @@ public class CompanyService extends Service{
      * 已删除的公司列表
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = companyDAO.queryDeleted();
+        arrayList = companyDAO.queryDeleted(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

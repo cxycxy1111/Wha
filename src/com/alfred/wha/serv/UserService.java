@@ -159,9 +159,9 @@ public class UserService extends Service{
      * 查询已删除的列表
      * @return
      */
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = userDAO.queryDeleted();
+        arrayList = userDAO.queryDeleted(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }
@@ -172,9 +172,9 @@ public class UserService extends Service{
      * 查询已锁定的列表
      * @return
      */
-    public String queryLocked() {
+    public String queryLocked(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = userDAO.queryLocked();
+        arrayList = userDAO.queryLocked(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }
@@ -190,6 +190,6 @@ public class UserService extends Service{
         if (!userDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
-        return Tool.transformFromCollection(userDAO.queryDetail(id));
+        return Tool.transformFromCollection(userDAO.queryDetail(id,1,1));
     }
 }

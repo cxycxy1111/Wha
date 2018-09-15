@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "UserDetailQry",urlPatterns = "/admin/user/detail")
+@WebServlet(name = "UserDetailQry",urlPatterns = "/admin/user/qry/detail")
 /**
- * http://localhost:8080/admin/user/detail?id=1
+ * http://localhost:8080/admin/user/qry/detail?id=1
  */
 public class UserDetailQry extends BaseServlet {
     private static final long serialVersionUID = 1L;
@@ -36,6 +36,6 @@ public class UserDetailQry extends BaseServlet {
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
     }
 }

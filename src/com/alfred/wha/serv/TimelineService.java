@@ -58,6 +58,22 @@ public class TimelineService extends Service{
     }
 
     /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public String recover(long id,long operator,int operator_type) {
+        if (!timelineDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        if (timelineDAO.recover(id)) {
+            LogDao.recordTimelineLog(id,LOG_OPERATE_RECOVER,operator,operator_type,"恢复时间线");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
      * 更新时间线
      * @param id
      * @param title
@@ -144,9 +160,9 @@ public class TimelineService extends Service{
      * @param event_id
      * @return
      */
-    public String queryByEvent(long event_id) {
+    public String queryByEvent(long event_id,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryByEvent(event_id);
+        arrayList = timelineDAO.queryByEvent(event_id,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -159,9 +175,9 @@ public class TimelineService extends Service{
      * @param creator_type
      * @return
      */
-    public String queryByCreator(long creator,int creator_type) {
+    public String queryByCreator(long creator,int creator_type,int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryByCreator(creator,creator_type);
+        arrayList = timelineDAO.queryByCreator(creator,creator_type,page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
@@ -175,42 +191,42 @@ public class TimelineService extends Service{
      */
     public String queryByTimeline(long timeline) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryByTimeline(timeline);
+        arrayList = timelineDAO.queryByTimeline(timeline,1,1);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(arrayList);
     }
 
-    public String queryNormal() {
+    public String queryNormal(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryNormal();
+        arrayList = timelineDAO.queryNormal(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(arrayList);
     }
 
-    public String queryRejected() {
+    public String queryRejected(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryRejected();
+        arrayList = timelineDAO.queryRejected(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(arrayList);
     }
 
-    public String queryUnchecked() {
+    public String queryUnchecked(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryUnchecked();
+        arrayList = timelineDAO.queryUnchecked(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(arrayList);
     }
-    public String queryDeleted() {
+    public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = timelineDAO.queryDeleted();
+        arrayList = timelineDAO.queryDeleted(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

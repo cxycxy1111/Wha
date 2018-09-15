@@ -161,20 +161,20 @@ public class UserDAO extends DAO{
         return Tool.getLongFromArrayList(helper.query(sql),"id");
     }
 
-    public ArrayList<HashMap<String,Object>> queryDetail(long id) {
-        return complexQuery(QRY_DETAIL,id,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryDetail(long id,int page_no,int length) {
+        return complexQuery(QRY_DETAIL,page_no,length,id,DEL_NO,STATUS_NORMAL);
     }
 
-    public ArrayList<HashMap<String,Object>> queryLocked() {
-        return complexQuery(QRY_STATUS,NULL,DEL_NO,STATUS_LOCKED);
+    public ArrayList<HashMap<String,Object>> queryLocked(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,DEL_NO,STATUS_LOCKED);
     }
 
-    public ArrayList<HashMap<String,Object>> queryNormal() {
-        return complexQuery(QRY_STATUS,NULL,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryNormal(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,DEL_NO,STATUS_NORMAL);
     }
 
-    public ArrayList<HashMap<String,Object>> queryDeleted() {
-        return complexQuery(QRY_STATUS,NULL,DEL_YES,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
+        return complexQuery(QRY_STATUS,page_no,length,NULL,DEL_YES,STATUS_NORMAL);
     }
 
 
@@ -186,7 +186,7 @@ public class UserDAO extends DAO{
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,long id,int del,int status){
+    private ArrayList<HashMap<String,Object>> complexQuery(int query_type,int page_no,int length,long id,int del,int status){
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (query_type) {
@@ -217,6 +217,7 @@ public class UserDAO extends DAO{
                 builder.append("del=").append(del);
                 break;
         }
+        builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }
 

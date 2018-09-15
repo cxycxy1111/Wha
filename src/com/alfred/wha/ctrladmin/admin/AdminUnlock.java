@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "AdminDelete",urlPatterns = "/admin/admin/unlock")
+@WebServlet(name = "AdminUnlock",urlPatterns = "/admin/admin/unlock")
 /**
  * localhost:8080/admin/admin/unlock?id=1
  */
@@ -40,7 +40,7 @@ public class AdminUnlock extends BaseServlet {
     @Override
     protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
         super.dealWithSessionDead(request, response, session, out);
-        out.append(SESSION_EXPIRED);
+
         out.close();
     }
 }
