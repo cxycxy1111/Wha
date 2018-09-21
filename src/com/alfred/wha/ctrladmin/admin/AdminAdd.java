@@ -36,8 +36,10 @@ public class AdminAdd extends BaseServlet {
         String pwd = request.getParameter("pwd");
         int type = Tool.requestToInt(request,"type");
         String email = request.getParameter("email");
-        long creator = Tool.requestToLong(request,"creator");
-        out.append(adminUserService.add(company_id,username,pwd,type,email,creator));
+        String motto = request.getParameter("motto");
+        String nick_name= request.getParameter("nick_name");
+        long creator = Tool.transformSessionValueToLong(session,"id");
+        out.append(adminUserService.add(company_id,username,pwd,type,email,creator,nick_name,motto));
     }
 
     @Override

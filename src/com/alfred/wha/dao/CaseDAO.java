@@ -25,11 +25,11 @@ public class CaseDAO extends DAO{
      * @param event_id
      * @param title
      * @param content
-     * @param creator_id
+     * @param creator
      * @param creator_type 0管理员 1用户
      * @return
      */
-    public boolean add(long event_id,String title,String content,long creator_id,int creator_type) {
+    public boolean add(long event_id,String title,String content,long creator,int creator_type) {
 
         String sql = "INSERT INTO cases (" +
                 "event_id," +
@@ -52,7 +52,7 @@ public class CaseDAO extends DAO{
                 "0," +
                 "0," +
                 "0," +
-                creator_id + "," +
+                creator + "," +
                 creator_type + ",'" +
                 Tool.getTime() + "'," + Tool.getTime() + ")";
 
@@ -265,7 +265,7 @@ public class CaseDAO extends DAO{
                     .append("c.title,")//案例标题
                     .append("truncate(e.id,0) event_id,")//事件ID
                     .append("trim(e.title) event_title,")//事件标题
-                    .append("CASE WHEN c.creator_type=0 THEN truncate(au.id 0) user_id ELSE truncate(u.id 0) creator_id END,")//创建者ID
+                    .append("CASE WHEN c.creator_type=0 THEN truncate(au.id 0) user_id ELSE truncate(u.id 0) creator END,")//创建者ID
                     .append("CASE WHEN c.creator_type=0 THEN trim(au.icon) creator_icon ELSE trim(u.icon) creator_icon END,")//创建者头像
                     .append("truncate(c.happen_time) case_happen_time,")//案例发生时间
                     .append("truncate(c.create_time) case_create_time,")//案例创建时间
@@ -276,7 +276,7 @@ public class CaseDAO extends DAO{
                     .append("c.content ");//内容
             builder.append("FROM cases c ");
             builder.append("LEFT JOIN event e ON c.event_id=e.id ")
-                    .append("LEFT JOIN user u ON c.creator_id=u.id ")
+                    .append("LEFT JOIN user u ON c.creator=u.id ")
                     .append("LEFT JOIN admin_user au ON c.creator=au.id ");
             builder.append("WHERE c.id=").append(case_id);
         } else {
@@ -300,7 +300,7 @@ public class CaseDAO extends DAO{
             switch (queryType) {
                 case QRY_SELF_SUBCRIBE:
                     builder.append("LEFT JOIN event e ON c.event_id=e.id ")
-                            .append("LEFT JOIN user u ON c.creator_id=u.id ")
+                            .append("LEFT JOIN user u ON c.creator=u.id ")
                             .append("LEFT JOIN admin_user au ON c.creator=au.id ");
                     builder.append("WHERE event_id IN (SELECT event_id FROM event_subscribe WHERE ")
                             .append("user_id=").append(user_id)
@@ -314,7 +314,7 @@ public class CaseDAO extends DAO{
                     break;
                 case QRY_STATUS:
                     builder.append("LEFT JOIN event e ON c.event_id=e.id ")
-                            .append("LEFT JOIN user u ON c.creator_id=u.id ")
+                            .append("LEFT JOIN user u ON c.creator=u.id ")
                             .append("LEFT JOIN admin_user au ON c.creator=au.id ");
                     if (del == 0) {
                         builder.append("e.status=").append(status).append(" AND ");

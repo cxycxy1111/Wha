@@ -42,12 +42,13 @@ public class AdminLogin extends BaseServlet {
         if (result.startsWith("{")){
             out.append(result);
         }else {
-            System.out.println("AdminLogin:session_id=" + session.getId());
+            HttpSession s = request.getSession();
+            System.out.println("AdminLogin:session_id=" + s.getId());
             String [] strings = result.split("|");
             System.out.println("AdminLogin:session_attr:id=" + strings[0]);
             System.out.println("AdminLogin:session_attr:type=" + strings[2]);
-            session.setAttribute("id",strings[0]);
-            session.setAttribute("type",strings[2]);
+            s.setAttribute("id",strings[0]);
+            s.setAttribute("type",strings[2]);
             out.append(BaseServlet.SUCCESS);
         }
     }

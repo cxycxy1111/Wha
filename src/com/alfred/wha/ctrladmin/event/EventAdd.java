@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "EventAdd",urlPatterns = "/admin/event/add")
 /**
- * http://localhost:8080/admin/event/add?event=0&title=111&content=111
+ * http://localhost:8080/admin/event/add?title=111&happen_time=2018-09-26 00:00:00
  */
 public class EventAdd extends BaseServlet {
     private static final long serialVersionUID = 1L;

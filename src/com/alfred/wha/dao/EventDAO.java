@@ -21,12 +21,12 @@ public class EventDAO extends DAO{
     /**
      * 新增
      * @param title
-     * @param creator_id
+     * @param creator
      * @param creator_type
      * @param happen_time
      * @return
      */
-    public boolean add(String title,long creator_id,int creator_type,String happen_time) {
+    public boolean add(String title,long creator,int creator_type,String happen_time) {
         String sql = "INSERT INTO event (title," +
                 "del," +
                 "status," +
@@ -38,10 +38,10 @@ public class EventDAO extends DAO{
                 "0," +
                 "1," +
                 "0," +
-                creator_id + "," +
+                creator + "," +
                 creator_type + ",'" +
                 Tool.getTime() + "','" +
-                happen_time + "'";
+                happen_time + "')";
         return executeSql(sql);
     }
 
@@ -71,7 +71,7 @@ public class EventDAO extends DAO{
      * @return
      */
     public boolean change(long id,String name,String happen_time) {
-        return executeSql("UPDATE event SET name='" + name + "',happen_time='" + happen_time + "' WHERE id=" + id);
+        return executeSql("UPDATE event SET title='" + name + "',happen_time='" + happen_time + "' WHERE id=" + id);
     }
 
     /**
@@ -179,43 +179,43 @@ public class EventDAO extends DAO{
      * @param status
      * @param del
      * @param event_id
-     * @param creator_id
+     * @param creator
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,int status,int del,long event_id,long creator_id,int creator_type) {
+    public ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,int status,int del,long event_id,long creator,int creator_type) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
             case QRY_BY_CREATOR://通过创建者查询
                 builder.append("e.id,")
                         .append("e.title,")
-                        .append("e.del")
-                        .append("e.status")
-                        .append("e.happen_time")
-                        .append("e.subcribe_count")
+                        .append("e.del,")
+                        .append("e.status,")
+                        .append("e.happen_time,")
+                        .append("e.subcribe_count,")
                         .append("FROM event e ");
-                builder.append("LEFT JOIN user u ON e.creator_id=u.id ")
+                builder.append("LEFT JOIN user u ON e.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
                 builder.append(" WHERE ")
-                        .append("e.creator_id=")
-                        .append(creator_id)
+                        .append("e.creator=")
+                        .append(creator)
                         .append(" AND e.creator_type=")
                         .append(creator_type);
                 break;
             case QRY_BY_EVENT://通过具体ID查询
                 builder.append("e.id,")
                         .append("e.title,")
-                        .append("e.del")
-                        .append("e.status")
-                        .append("e.happen_time")
-                        .append("e.subcribe_count")
-                        .append("e.creator_type")
+                        .append("e.del,")
+                        .append("e.status,")
+                        .append("e.happen_time,")
+                        .append("e.subcribe_count,")
+                        .append("e.creator_type,")
                         .append("e.creator,")
                         .append("CASE WHEN e.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
                         .append("CASE WHEN e.creator_type=0 THEN au.icon ELSE u.icon END ")
                         .append("FROM event e ");
-                builder.append("LEFT JOIN user u ON e.creator_id=u.id ")
+                builder.append("LEFT JOIN user u ON e.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
                 builder.append(" WHERE ");
                 builder.append("e.id=").append(event_id);
@@ -223,22 +223,22 @@ public class EventDAO extends DAO{
             case QRY_BY_STATUS://通过状态查询
                 builder.append("e.id,")
                         .append("e.title,")
-                        .append("e.del")
-                        .append("e.status")
-                        .append("e.happen_time")
-                        .append("e.subcribe_count")
-                        .append("e.creator_type")
+                        .append("e.del,")
+                        .append("e.status,")
+                        .append("e.happen_time,")
+                        .append("e.subcribe_count,")
+                        .append("e.creator_type,")
                         .append("e.creator,")
                         .append("CASE WHEN e.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
                         .append("CASE WHEN e.creator_type=0 THEN au.icon ELSE u.icon END ")
                         .append("FROM event e ");
-                builder.append("LEFT JOIN user u ON e.creator_id=u.id ")
+                builder.append("LEFT JOIN user u ON e.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
                 builder.append(" WHERE ");
                 if (del == 0){
-                    builder.append("e.status=").append(status).append(" AND ");
+                    builder.append("e.status=").append(status).append(" AND e.del=0 ");
                 } else {
-                    builder.append(" e.del=").append(del);
+                    builder.append(" e.del=1").append(del);
                 }
                 builder.append(" ORDER BY e.id DESC ");
                 builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);

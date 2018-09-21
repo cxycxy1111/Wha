@@ -160,12 +160,12 @@ public class TimelineDAO extends DAO{
 
     /**
      * 通过创建人查询时间线，按创建事件倒序排列
-     * @param creator_id
+     * @param creator
      * @param creator_type
      * @return
      */
-    public ArrayList<HashMap<String,Object>> queryByCreator(long creator_id,int creator_type,int page_no,int length) {
-        return complexQuery(QRY_BY_CREATOR,page_no,length,NULL,NULL,creator_id,creator_type,DEL_NO,STATUS_NORMAL);
+    public ArrayList<HashMap<String,Object>> queryByCreator(long creator,int creator_type,int page_no,int length) {
+        return complexQuery(QRY_BY_CREATOR,page_no,length,NULL,NULL,creator,creator_type,DEL_NO,STATUS_NORMAL);
     }
 
     /**
@@ -214,7 +214,7 @@ public class TimelineDAO extends DAO{
                             .append("FROM timeline t ");
                     break;
                 default:
-                    builder.append("t.creator_id,")
+                    builder.append("t.creator,")
                             .append("t.creator_type,")
                             .append("(CASE WHEN t.creator_type=0 THEN au.nick_name ELSE u.nick_name END),")
                             .append("CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ");
@@ -229,8 +229,8 @@ public class TimelineDAO extends DAO{
                     break;
                 case QRY_BY_EVENT:
                     builder.append("LEFT JOIN event e ON t.event_id=e.id ")
-                            .append("LEFT JOIN admin_user au ON t.creator_id=au.id ")
-                            .append("LEFT JOIN user u ON t.creator_id=u.id ");
+                            .append("LEFT JOIN admin_user au ON t.creator=au.id ")
+                            .append("LEFT JOIN user u ON t.creator=u.id ");
                     builder.append("WHERE t.event_id=").append(event_id)
                             .append(" AND t.del=0 ")//未删除
                             .append("AND t.status=0 ")//已过审
@@ -249,7 +249,7 @@ public class TimelineDAO extends DAO{
 
         }else {//详情
             builder.append("t.content,")
-                    .append("t.creator_id,")
+                    .append("t.creator,")
                     .append("t.creator_type,")
                     .append("(CASE WHEN t.creator_type=0 THEN au.nickname ELSE u.nickname END),")
                     .append("CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ")
@@ -258,8 +258,8 @@ public class TimelineDAO extends DAO{
                     .append("trim(e.happen_time event_happen_time,")
                     .append("FROM timeline t ")
                     .append("LEFT JOIN event e ON t.event_id=e.id ")
-                    .append("LEFT JOIN admin_user au ON t.creator_id=au.id ")
-                    .append("LEFT JOIN user u ON t.creator_id=u.id ");
+                    .append("LEFT JOIN admin_user au ON t.creator=au.id ")
+                    .append("LEFT JOIN user u ON t.creator=u.id ");
             builder.append(" WHERE t.id=")
                     .append(id)
                     .append(" ORDER BY create_time DESC");

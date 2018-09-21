@@ -111,11 +111,11 @@ public class CompanyService extends Service{
      * @param id
      * @return
      */
-    public String queryByCompany(long id,int page_no,int length) {
+    public String queryByCompany(long id) {
         if (!companyDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
-        return Tool.transformFromCollection(companyDAO.queryByCompany(id,page_no,length));
+        return Tool.transformFromCollection(companyDAO.queryByCompany(id,1,1));
     }
 
 

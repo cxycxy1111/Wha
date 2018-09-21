@@ -42,7 +42,7 @@ public class ProductDAO extends DAO{
                 "1,'" +
                 Tool.getTime() + "'," +
                 creator + "," +
-                creator_type;
+                creator_type + ")";
         return Tool.executeSql(sql);
     }
 
@@ -53,6 +53,15 @@ public class ProductDAO extends DAO{
      */
     public boolean delete(long product_id) {
         return executeSql("UPDATE product SET del=1 WHERE id=" + product_id);
+    }
+
+    /**
+     * 删除
+     * @param product_id
+     * @return
+     */
+    public boolean recover(long product_id) {
+        return executeSql("UPDATE product SET del=0 WHERE id=" + product_id);
     }
 
     /**
@@ -196,13 +205,13 @@ public class ProductDAO extends DAO{
      * @param queryType 查询类型 1根据产品ID精确查询 2根据公司ID查询 3根据创建者ID查询
      * @param company_id
      * @param product_id
-     * @param creator_id
+     * @param creator
      * @param creator_type
      * @param del
      * @param status
      * @return
      */
-    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long company_id,long product_id,long creator_id,int creator_type,int del,int status) {
+    private ArrayList<HashMap<String,Object>> complexQuery(int queryType,int page_no,int length,long company_id,long product_id,long creator,int creator_type,int del,int status) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         switch (queryType) {
@@ -254,7 +263,7 @@ public class ProductDAO extends DAO{
                         .append("p.update_time")
                         .append(" FROM product p ")
                         .append("LEFT JOIN company c ON p.company_id=c.id ");
-                builder.append("WHERE p.creator=").append(creator_id)
+                builder.append("WHERE p.creator=").append(creator)
                         .append(" AND p.creator_type=").append(creator_type)
                         .append(" AND p.del=").append(del).append(" AND p.status=").append(status);
                 break;

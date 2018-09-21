@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "AdminRecover",urlPatterns = "/admin/admin/recover?id=1")
+@WebServlet(name = "AdminRecover",urlPatterns = "/admin/admin/recover")
 /**
  * localhost:8080/admin/admin/recover?id=1
  */

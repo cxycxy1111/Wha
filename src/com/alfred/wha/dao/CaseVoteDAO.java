@@ -137,7 +137,7 @@ public class CaseVoteDAO extends DAO{
                         .append("FROM case_vote cv ")
                         .append("LEFT JOIN cases c ON cv.case_id=c.id ")
                         .append("LEFT JOIN admin_user au ON c.creator=au.id ")
-                        .append("LEFT JOIN user u ON c.creator_id=u.id ");
+                        .append("LEFT JOIN user u ON c.creator=u.id ");
                 builder.append("WHERE cv.user_id=").append(user_id).append(" AND cv.user_type=").append(user_type);
                 break;
             //按案例ID查询

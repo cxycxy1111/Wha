@@ -20,22 +20,22 @@ public class EventService extends Service{
     /**
      * 新增
      * @param title
-     * @param creator_id
+     * @param creator
      * @param creator_type
      * @param happen_time
      * @return
      */
-    public String add(String title,boolean is_alow_duplicate,long creator_id,int creator_type,String happen_time) {
+    public String add(String title,boolean is_alow_duplicate,long creator,int creator_type,String happen_time) {
         if (eventDAO.isExist(title)) {
             if (is_alow_duplicate) {
-                if (eventDAO.add(title,creator_id,creator_type,happen_time)) {
+                if (eventDAO.add(title,creator,creator_type,happen_time)) {
                     return SUCCESS;
                 }
                 return FAIL;
             }
             return DUPLICATE;
         }
-        if (eventDAO.add(title,creator_id,creator_type,happen_time)) {
+        if (eventDAO.add(title,creator,creator_type,happen_time)) {
             return SUCCESS;
         }
         return FAIL;

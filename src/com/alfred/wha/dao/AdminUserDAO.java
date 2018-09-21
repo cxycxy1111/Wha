@@ -28,7 +28,7 @@ public class AdminUserDAO extends DAO{
      * @param creator
      * @return
      */
-    public boolean add(long company_id,String username,String pwd,int type,String email,long creator) {
+    public boolean add(long company_id,String username,String pwd,int type,String email,long creator,String motto,String nick_name) {
 
         String sql = "INSERT INTO admin_user (" +
                 "company_id," +
@@ -41,18 +41,20 @@ public class AdminUserDAO extends DAO{
                 "email," +
                 "create_time," +
                 "creator," +
-                "icon) VALUES (" +
+                "icon," +
+                "motto) VALUES (" +
                 company_id + ",'" +
                 username + "','" +
                 Tool.getMd5FromString(pwd) + "'," +
                 "0," +
                 type + "," +
                 "0,'" +
-                username + "','" +
+                nick_name + "','" +
                 email + "','" +
                 Tool.getTime() + "'," +
                 creator + "," +
-                "'defult_icon.png')";
+                "'defult_icon.png','" +
+                motto + "')";
         return executeSql(sql);
     }
 
@@ -72,7 +74,7 @@ public class AdminUserDAO extends DAO{
      * @return
      */
     public boolean recover(long id) {
-        String sql = "UPDATE admin_user SET del=0cover WHERE id=" + id;
+        String sql = "UPDATE admin_user SET del=0 WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -84,8 +86,13 @@ public class AdminUserDAO extends DAO{
      * @param new_motto
      * @return
      */
-    public boolean updateInfo(long id,String new_nick_name,String new_email,String new_motto) {
-        return executeSql("UPDATE admin_user SET nick_name='" + new_nick_name + "',email='" + new_email+"',motto='" + new_motto + "' WHERE id=" +id);
+    public boolean updateInfo(long id,String new_nick_name,String new_email,String new_motto,int type,long company) {
+        return executeSql("UPDATE admin_user SET nick_name='" + new_nick_name + "'," +
+                "email='" + new_email+"'," +
+                "motto='" + new_motto + "' " + "," +
+                "type=" + type + "," +
+                "company_id=" + company + " " +
+                "WHERE id=" +id);
     }
 
     /**
@@ -271,11 +278,11 @@ public class AdminUserDAO extends DAO{
                         .append("au.email,")
                         .append("au.create_time,")
                         .append("au.icon,")
-                        .append("au.motto")
+                        .append("au.motto,")
                         .append("au.company_id,")
                         .append("c.name ");
-                builder.append("FROM admin_user au");
-                builder.append("LEFT JOIN company c ON au.id=company_id ");
+                builder.append("FROM admin_user au ");
+                builder.append("LEFT JOIN company c ON au.company_id=c.id ");
                 builder.append("WHERE au.id=").append(id);
                 break;
             case QRY_STATUS:

@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "EventListQryUnchecked",urlPatterns = "/admin/event/qry/unchecked")
+@WebServlet(name = "EventListQryDeleted",urlPatterns = "/admin/event/qry/deleted")
 /**
- * http://localhost:8080/admin/event/qry/unchecked?page_no=1
+ * http://localhost:8080/admin/event/qry/deleted?page_no=1
  */
 public class EventListQryDeleted extends BaseServlet {
     private static final long serialVersionUID = 1L;

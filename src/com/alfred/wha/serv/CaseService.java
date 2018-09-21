@@ -27,21 +27,21 @@ public class CaseService extends Service{
      * @param event_id
      * @param title
      * @param content
-     * @param creator_id
+     * @param creator
      * @param creator_type 0管理员 1用户
      * @return
      */
-    public String add(boolean is_allow_duplicate,long event_id,String title,String content,long creator_id,int creator_type) {
+    public String add(boolean is_allow_duplicate,long event_id,String title,String content,long creator,int creator_type) {
         if (caseDAO.isExist(title)) {
             if (is_allow_duplicate) {
-                if (caseDAO.add(event_id,title,content,creator_id,creator_type)){
+                if (caseDAO.add(event_id,title,content,creator,creator_type)){
                     return SUCCESS;
                 }
                 return FAIL;
             }
             return DUPLICATE;
         }
-        if (caseDAO.add(event_id,title,content,creator_id,creator_type)){
+        if (caseDAO.add(event_id,title,content,creator,creator_type)){
             return SUCCESS;
         }
         return FAIL;

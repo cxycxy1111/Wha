@@ -35,7 +35,9 @@ public class AdminEdit extends BaseServlet {
         String nick_name = request.getParameter("nick_name");
         String email = request.getParameter("email");
         String motto = request.getParameter("motto");
-        out.append(adminUserService.changeNickNameAndMotto(id,current_user,current_user_type,nick_name,email,motto));
+        long company = Tool.requestToLong(request,"company");
+        int type = Tool.requestToInt(request,"type");
+        out.append(adminUserService.changeNickNameAndMotto(id,current_user,current_user_type,nick_name,email,motto,type,company));
     }
 
     @Override

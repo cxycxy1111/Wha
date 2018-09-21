@@ -27,11 +27,11 @@ public class AdminUserService extends Service{
      * @param creator
      * @return
      */
-    public String add(long company_id,String username,String pwd,int type,String email,long creator) {
+    public String add(long company_id,String username,String pwd,int type,String email,long creator,String nick_name,String motto) {
         if (adminUserDAO.isExist(username)) {
             return DUPLICATE;
         }
-        if (adminUserDAO.add(company_id,username,pwd,type,email,creator)) {
+        if (adminUserDAO.add(company_id,username,pwd,type,email,creator,motto,nick_name)) {
             return SUCCESS;
         }
         return FAIL;
@@ -47,11 +47,11 @@ public class AdminUserService extends Service{
      * @param creator
      * @return
      */
-    public String register(long company_id,String username,String pwd,int type,String email,int creator) {
+    public String register(long company_id,String username,String pwd,int type,String email,int creator,String nick_name,String motto) {
         if (adminUserDAO.isExist(username)) {
             return DUPLICATE;
         }
-        if (adminUserDAO.add(company_id,username,pwd,type,email,creator)) {
+        if (adminUserDAO.add(company_id,username,pwd,type,email,creator,nick_name,motto)) {
             return SUCCESS;
         }
         return FAIL;
@@ -147,10 +147,10 @@ public class AdminUserService extends Service{
      * @param motto
      * @return
      */
-    public String changeNickNameAndMotto(long id,long operator,int operator_type,String nick_name,String email,String motto) {
-        if (adminUserDAO.updateInfo(id,nick_name,email,motto)){
+    public String changeNickNameAndMotto(long id,long operator,int operator_type,String nick_name,String email,String motto,int type,long company) {
+        if (adminUserDAO.updateInfo(id,nick_name,email,motto,type,company)){
             String log = "新头像:" + nick_name + ",新签名:" + motto + ",新email:" + email;
-            LogDao.recordAdminUserLog(id,LOG_OPERATE_EDIT,id,operator_type,log);
+            LogDao.recordAdminUserLog(id,LOG_OPERATE_EDIT,operator,operator_type,log);
             return SUCCESS;
         }
         return FAIL;
@@ -256,7 +256,7 @@ public class AdminUserService extends Service{
         if (!adminUserDAO.isExist(id)) {
             return QRY_RESULT_EMPTY;
         }
-        return Tool.transformFromCollection(adminUserDAO.queryDetail(id,0,1));
+        return Tool.transformFromCollection(adminUserDAO.queryDetail(id,1,1));
     }
 
 }

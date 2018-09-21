@@ -1,6 +1,6 @@
-package com.alfred.wha.ctrladmin.event;
+package com.alfred.wha.ctrladmin.product;
 
-import com.alfred.wha.serv.EventService;
+import com.alfred.wha.serv.ProductService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
 
@@ -12,16 +12,15 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "EventEdit",urlPatterns = "/admin/event/edit")
+@WebServlet(name = "ProductDetailQry",urlPatterns = "/admin/product/qry/detail")
 /**
- * http://localhost:8080/admin/event/edit?id=0&title=111
+ * http://localhost:8080//admin/product/qry/detail?id=1
  */
-public class EventEdit extends BaseServlet {
+public class ProductDetailQry extends BaseServlet {
     private static final long serialVersionUID = 1L;
-    private EventService eventService = new EventService();
+    private ProductService productService = new ProductService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        super.doPost(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,10 +30,8 @@ public class EventEdit extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        long id = Tool.requestToLong(request,"id");
-        String title = request.getParameter("title");
-        String happen_time = request.getParameter("happen_time");
-        out.append(eventService.change(id,current_user,current_user_type,true,title,happen_time));
+        long id = Tool.requestToInt(request,"id");
+        out.append(productService.queryByProduct(id));
     }
 
     @Override

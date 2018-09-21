@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "EventListQryCreator",urlPatterns = "/admin/event/qry/creator")
 /**
- * http://localhost:8080/admin/event/qry/creator?creator=1&creator_type=1
+ * http://localhost:8080/admin/event/qry/creator?creator=1&creator_type=1&page_no=1
  */
 public class EventListQryCreator extends BaseServlet {
     private static final long serialVersionUID = 1L;

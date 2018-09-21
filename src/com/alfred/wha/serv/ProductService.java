@@ -25,7 +25,7 @@ public class ProductService extends Service{
      * @return
      */
     public String add(long company_id,String name,long creator,int creator_type) {
-        if (productDAO.queryByName(name).size()==0) {
+        if (productDAO.queryByName(name).size() != 0) {
             return DUPLICATE;
         }
         if (productDAO.add(company_id,name,creator,creator_type)) {
@@ -47,7 +47,18 @@ public class ProductService extends Service{
         return FAIL;
     }
 
-
+    /**
+     * 删除产品
+     * @param product_id
+     * @return
+     */
+    public String recover(long product_id,long operator,int operator_type) {
+        if (productDAO.recover(product_id)) {
+            LogDao.recordProductLog(product_id,LOG_OPERATE_RECOVER,operator,operator_type,"删除产品");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
 
     /**
      * 产品通过审核
