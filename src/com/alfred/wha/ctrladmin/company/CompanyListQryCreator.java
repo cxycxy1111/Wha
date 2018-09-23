@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "CompanyListQryDeleted",urlPatterns = "/admin/company/qry/deleted")
+@WebServlet(name = "CompanyListQryCreator",urlPatterns = "/admin/company/qry/creator")
 /**
- * http://localhost:8080/admin/company/qry/deleted
+ * http://localhost:8080/admin/company/qry/creator?id=111&creator_type=0&page_no=1
  */
 public class CompanyListQryCreator extends BaseServlet {
     private static final long serialVersionUID = 1L;

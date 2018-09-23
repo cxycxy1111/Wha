@@ -163,6 +163,11 @@ public class CompanyDAO extends DAO{
         return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,STATUS_PASSED,DEL_YES);
     }
 
+    public ArrayList<HashMap<String,Object>> simpleQuery() {
+        String sql = "SELECT id,name FROM company WHERE status=0 and del=0 order by name desc";
+        return helper.query(sql);
+    }
+
     /**
      * 复杂查询
      * @param queryType 查询条件 1按del与status查询 2按指定ID查询 3按创建者id查询

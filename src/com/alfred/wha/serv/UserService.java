@@ -31,11 +31,11 @@ public class UserService extends Service{
      * @param email
      * @return
      */
-    public String register(String username,String pwd,String email) {
+    public String register(String username,String pwd,String nick_name,String email,String motto) {
         if (userDAO.isExist(username)) {
             return DUPLICATE;
         }
-        if (userDAO.add(username, Tool.getMd5FromString(pwd),email)) {
+        if (userDAO.add(username, Tool.getMd5FromString(pwd),nick_name,email,motto)) {
             return SUCCESS;
         }
         return FAIL;
@@ -98,7 +98,7 @@ public class UserService extends Service{
      * @param motto
      * @return
      */
-    public String changeNickNameAndMotto(long id,int operator_type,String nick_name,String email,String motto) {
+    public String changeNickNameAndMotto(long id,long operator,int operator_type,String nick_name,String email,String motto) {
         if (userDAO.updateInfo(id,nick_name,email,motto)){
             LogDao.recordUserLog(id,LOG_OPERATE_EDIT,id,operator_type,"新昵称:" + nick_name + ",新邮箱:" + email + ",新签名:" + motto);
             return SUCCESS;
@@ -162,6 +162,19 @@ public class UserService extends Service{
     public String queryDeleted(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
         arrayList = userDAO.queryDeleted(page_no,length);
+        if (arrayList.size() != 0) {
+            return Tool.transformFromCollection(arrayList);
+        }
+        return QRY_RESULT_EMPTY;
+    }
+
+    /**
+     * 查询已删除的列表
+     * @return
+     */
+    public String queryNormal(int page_no,int length) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = userDAO.queryNormal(page_no,length);
         if (arrayList.size() != 0) {
             return Tool.transformFromCollection(arrayList);
         }

@@ -106,6 +106,15 @@ public class CompanyService extends Service{
 
     }
 
+    public String simpleQuery() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = companyDAO.simpleQuery();
+        if (arrayList.size()== 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
     /**
      * 通过ID查询
      * @param id

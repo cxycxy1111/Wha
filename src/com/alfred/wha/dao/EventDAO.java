@@ -238,7 +238,7 @@ public class EventDAO extends DAO{
                 if (del == 0){
                     builder.append("e.status=").append(status).append(" AND e.del=0 ");
                 } else {
-                    builder.append(" e.del=1").append(del);
+                    builder.append(" e.del=1");
                 }
                 builder.append(" ORDER BY e.id DESC ");
                 builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);

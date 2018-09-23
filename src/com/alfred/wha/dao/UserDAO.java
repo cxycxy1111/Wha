@@ -25,7 +25,7 @@ public class UserDAO extends DAO{
      * @param email
      * @return
      */
-    public boolean add(String username,String pwd,String email) {
+    public boolean add(String username,String pwd,String nick_name,String email,String motto) {
         String sql = "INSERT INTO user (" +
                 "user_name," +
                 "pwd," +
@@ -34,15 +34,16 @@ public class UserDAO extends DAO{
                 "nick_name," +
                 "email," +
                 "create_time," +
-                "icon) VALUES ('"
+                "icon,motto) VALUES ('"
                 + username + "','" +
                 pwd + "'," +
                 "0," +
                 "0,'" +
-                username + "','" +
+                nick_name + "','" +
                 email + "','" +
                 Tool.getTime() + "'," +
-                "'default_icon.png')";
+                "'default_icon.png','" + motto +
+                "')";
         return executeSql(sql);
     }
 

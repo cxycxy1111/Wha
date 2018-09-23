@@ -1,6 +1,6 @@
-package com.alfred.wha.ctrladmin.product;
+package com.alfred.wha.ctrladmin.company;
 
-import com.alfred.wha.serv.ProductService;
+import com.alfred.wha.serv.CompanyService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
 
@@ -12,13 +12,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "ProductListQueryUnchecked",urlPatterns = "/admin/product/qry/unchecked")
+@WebServlet(name = "CompanyListQryIgnoreStatus",urlPatterns = "/admin/company/qry/ignoreStatus")
 /**
- * http://localhost:8080//admin/product/qry/Unchecked
+ * http://localhost:8080/admin/company/qry/normal
  */
-public class ProductListQryUnchecked extends BaseServlet {
+public class CompanyListQryIgnoreStatus extends BaseServlet {
     private static final long serialVersionUID = 1L;
-    private ProductService productService = new ProductService();
+    private CompanyService companyService = new CompanyService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
@@ -30,8 +30,7 @@ public class ProductListQryUnchecked extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        int page_no = Tool.requestToInt(request,"page_no");
-        out.append(productService.queryUncheck(page_no,10));
+        out.append(companyService.simpleQuery());
     }
 
     @Override

@@ -172,7 +172,7 @@ public class ProductService extends Service{
      */
     public String queryUncheck(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
-        arrayList = productDAO.queryPassed(page_no,length);
+        arrayList = productDAO.queryUncheck(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

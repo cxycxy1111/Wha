@@ -155,7 +155,7 @@ public class ProductDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryByCompany(long company_id,int page_no,int length) {
-        return complexQuery(QRY_BY_PRODUCT,page_no,length,company_id,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
+        return complexQuery(QRY_BY_COMPANY,page_no,length,company_id,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
     }
 
     /**
@@ -173,7 +173,7 @@ public class ProductDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryPassed(int page_no,int length) {
-        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_PASSED);
     }
 
     /**
@@ -181,7 +181,7 @@ public class ProductDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryUncheck(int page_no,int length) {
-        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_NEEDCHECK);
     }
 
     /**
@@ -189,7 +189,7 @@ public class ProductDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryRejected(int page_no,int length) {
-        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_NO,STATUS_REJECTED);
     }
 
     /**
@@ -197,7 +197,7 @@ public class ProductDAO extends DAO{
      * @return
      */
     public ArrayList<HashMap<String,Object>> queryDeleted(int page_no,int length) {
-        return complexQuery(QRY_BY_PRODUCT,page_no,length,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
+        return complexQuery(QRY_BY_STATUS,page_no,length,NULL,NULL,NULL,NULL,DEL_YES,STATUS_NORMAL);
     }
 
     /**
@@ -222,29 +222,27 @@ public class ProductDAO extends DAO{
                         .append("trim(c.name) company_name,")
                         .append("p.status,")
                         .append("p.del,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.icon ELSE u.icon END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.icon ELSE u.icon END,")
                         .append("p.creator,")
                         .append("p.creator_type,")
-                        .append("p.create_time,")
-                        .append("p.update_time,")
+                        .append("p.create_time ")
                         .append(" FROM product p ")
                         .append("LEFT JOIN company c ON p.company_id=c.id ")
                         .append("LEFT JOIN user u ON p.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON p.creator=au.id ");
-                builder.append("WHERE id=").append(product_id);
+                builder.append("WHERE p.id=").append(product_id);
                 break;
             case QRY_BY_COMPANY://根据公司ID查询
                 builder.append("p.id,")
                         .append("p.name,")
                         .append("p.status,")
                         .append("p.del,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.icon ELSE u.icon END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.icon ELSE u.icon END,")
                         .append("p.creator,")
                         .append("p.creator_type,")
                         .append("p.create_time,")
-                        .append("p.update_time")
                         .append(" FROM product p ")
                         .append("LEFT JOIN user u ON p.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON p.creator=au.id ");
@@ -260,7 +258,6 @@ public class ProductDAO extends DAO{
                         .append("p.status,")
                         .append("p.del,")
                         .append("p.create_time,")
-                        .append("p.update_time")
                         .append(" FROM product p ")
                         .append("LEFT JOIN company c ON p.company_id=c.id ");
                 builder.append("WHERE p.creator=").append(creator)
@@ -270,14 +267,13 @@ public class ProductDAO extends DAO{
             case QRY_BY_STATUS:
                 builder.append("p.id,")
                         .append("p.name,")
-                        .append("p.status")
+                        .append("p.status,")
                         .append("p.del,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN p.creator.user_type=0 THEN au.icon ELSE u.icon END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
+                        .append("CASE WHEN p.creator_type=0 THEN au.icon ELSE u.icon END,")
                         .append("p.creator,")
                         .append("p.creator_type,")
-                        .append("p.create_time,")
-                        .append("p.update_time")
+                        .append("p.create_time ")
                         .append(" FROM product p ")
                         .append("LEFT JOIN user u ON p.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON p.creator=au.id ");

@@ -1,0 +1,34 @@
+<component name="libraryTable">
+  <library name="TomcatAPI">
+    <CLASSES>
+      <root url="jar:///usr/local/tomcat/lib/annotations-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/c3p0-0.9.5.2.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/catalina-ant.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/catalina-ha.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/catalina-storeconfig.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/catalina-tribes.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/catalina.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/ecj-4.6.3.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/el-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/jasper-el.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/jasper.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/jaspic-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/jsp-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/mchange-commons-java-0.2.11.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/mysql-connector-java-5.1.46.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/org.json.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/servlet-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-api.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-coyote.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-dbcp.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-jdbc.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-jni.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-util-scan.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-util.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/tomcat-websocket.jar!/" />
+      <root url="jar:///usr/local/tomcat/lib/websocket-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

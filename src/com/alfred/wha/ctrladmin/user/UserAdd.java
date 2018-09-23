@@ -1,6 +1,6 @@
-package com.alfred.wha.ctrladmin.product;
+package com.alfred.wha.ctrladmin.user;
 
-import com.alfred.wha.serv.ProductService;
+import com.alfred.wha.serv.UserService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
 
@@ -12,13 +12,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "ProductListQueryUnchecked",urlPatterns = "/admin/product/qry/unchecked")
+@WebServlet(name = "UserAdd",urlPatterns = "/admin/user/add")
 /**
- * http://localhost:8080//admin/product/qry/Unchecked
+ * http://localhost:8080/admin/user/delete?id=1
  */
-public class ProductListQryUnchecked extends BaseServlet {
+public class UserAdd extends BaseServlet {
     private static final long serialVersionUID = 1L;
-    private ProductService productService = new ProductService();
+    private UserService userService = new UserService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
@@ -30,8 +30,12 @@ public class ProductListQryUnchecked extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        int page_no = Tool.requestToInt(request,"page_no");
-        out.append(productService.queryUncheck(page_no,10));
+        String user_name = request.getParameter("user_name");
+        String pwd = request.getParameter("pwd");
+        String nick_name = request.getParameter("nick_name");
+        String email = request.getParameter("email");
+        String motto = request.getParameter("motto");
+        out.append(userService.register(user_name,pwd,nick_name,email,motto));
     }
 
     @Override
