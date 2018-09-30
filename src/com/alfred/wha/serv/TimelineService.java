@@ -81,10 +81,10 @@ public class TimelineService extends Service{
      * @param happen_time
      * @return
      */
-    public String update(boolean is_allow_duplicate,long id,long operator,int operator_type,String title,String content,String happen_time) {
+    public String update(boolean is_allow_duplicate,long id,long event_id,long operator,int operator_type,String title,String content,String happen_time) {
         if (timelineDAO.isExist(id,title)) {
             if (is_allow_duplicate) {
-                if (timelineDAO.update(id,title,content,happen_time)) {
+                if (timelineDAO.update(id,event_id,title,content,happen_time)) {
                     LogDao.recordTimelineLog(id,LOG_OPERATE_EDIT,operator,operator_type,"标题:"+ title + ",发生时间为:"+happen_time + ",内容为:"+happen_time.substring(0,200));
                     return SUCCESS;
                 }
@@ -92,7 +92,7 @@ public class TimelineService extends Service{
             }
             return DUPLICATE;
         }
-        if (timelineDAO.update(id,title,content,happen_time)) {
+        if (timelineDAO.update(id,event_id,title,content,happen_time)) {
             return SUCCESS;
         }
         return FAIL;

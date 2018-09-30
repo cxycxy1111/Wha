@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "TimelineAdd",urlPatterns = "/admin/timeline/add")
+@WebServlet(name = "TimelineUpdate",urlPatterns = "/admin/timeline/edit")
 /**
- * http://localhost:8080/admin/timeline/add?event=0&title=111&content=111&happen_time=2018-06-30 18:30:00
+ * http://localhost:8080/admin/timeline/edit?event=0&title=111&content=111&happen_time=2018-06-30 18:30:00
  */
 public class TimelineUpdate extends BaseServlet {
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,8 @@ public class TimelineUpdate extends BaseServlet {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String happen_time = request.getParameter("happen_time");
-        out.append(timelineService.update(true,id,current_user,current_user_type,title,content,happen_time));
+        long event_id = Tool.requestToLong(request,"event");
+        out.append(timelineService.update(true,id,event_id,current_user,current_user_type,title,content,happen_time));
     }
 
     @Override

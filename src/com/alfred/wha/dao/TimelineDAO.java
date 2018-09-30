@@ -77,9 +77,13 @@ public class TimelineDAO extends DAO{
      * @param happen_time
      * @return
      */
-    public boolean update(long id,String title,String content,String happen_time) {
-        return executeSql("UPDATE timeline SET title='" + title + "',content='" + content + "',happen_time='" + happen_time + "' " +
-                "WHERE id=" + id);
+    public boolean update(long id,long event_id,String title,String content,String happen_time) {
+        return executeSql("UPDATE timeline SET " +
+                "title='" + title + "'," +
+                "content='" + content + "'," +
+                "happen_time='" + happen_time + "'," +
+                "event_id=" + event_id +
+                " WHERE id=" + id);
     }
 
     /**
