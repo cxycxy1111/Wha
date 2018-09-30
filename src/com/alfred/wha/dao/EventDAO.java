@@ -133,6 +133,10 @@ public class EventDAO extends DAO{
         return complexQuery(QRY_BY_CREATOR,page_no,length,STATUS_IGNORE,DEL_NO,NULL,creator,creator_type);
     }
 
+    public ArrayList<HashMap<String,Object>> simpleQuery() {
+        return helper.query("SELECT id,title FROM event WHERE status=0 AND del=0");
+    }
+
     /**
      * 通过事件ID查询
      * @param event_id

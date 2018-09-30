@@ -162,6 +162,15 @@ public class EventService extends Service{
         return subcribe(user_id, user_type, event_id);
     }
 
+    public String simpleQuery() {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = eventDAO.simpleQuery();
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
     /**
      * 通过创建者查询
      * @param creator
