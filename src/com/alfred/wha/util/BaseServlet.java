@@ -28,6 +28,7 @@ public class BaseServlet extends HttpServlet {
     public static final String AUTHORIZE_FAIL=prefix + "authorize_fail" + suffix;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("utf-8");
         doGet(request,response);
     }
 

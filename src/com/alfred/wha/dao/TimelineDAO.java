@@ -209,7 +209,7 @@ public class TimelineDAO extends DAO{
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         builder.append("t.id,")
-                .append("t.name,")
+                .append("t.title,")
                 .append("t.happen_time,");
         if (queryType != QRY_BY_DETAIL) {
             switch (queryType) {//字段
@@ -221,20 +221,20 @@ public class TimelineDAO extends DAO{
                     builder.append("t.creator,")
                             .append("t.creator_type,")
                             .append("(CASE WHEN t.creator_type=0 THEN au.nick_name ELSE u.nick_name END),")
-                            .append("CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ");
+                            .append("(CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ");
                     builder.append("FROM timeline t ");
                     break;
             }
+            builder.append("LEFT JOIN event e ON t.event_id=e.id ")
+                    .append("LEFT JOIN admin_user au ON t.creator=au.id ")
+                    .append("LEFT JOIN user u ON t.creator=u.id ");
             switch (queryType) {//条件
                 case QRY_BY_CREATOR:
                     builder.append(" WHERE t.creator=").append(creator)
-                            .append(" AND creator_type=").append(creator_type)
-                            .append(" ORDER BY create_time DESC");
+                            .append(" AND t.creator_type=").append(creator_type)
+                            .append(" ORDER BY t.create_time DESC");
                     break;
                 case QRY_BY_EVENT:
-                    builder.append("LEFT JOIN event e ON t.event_id=e.id ")
-                            .append("LEFT JOIN admin_user au ON t.creator=au.id ")
-                            .append("LEFT JOIN user u ON t.creator=u.id ");
                     builder.append("WHERE t.event_id=").append(event_id)
                             .append(" AND t.del=0 ")//未删除
                             .append("AND t.status=0 ")//已过审
@@ -255,18 +255,17 @@ public class TimelineDAO extends DAO{
             builder.append("t.content,")
                     .append("t.creator,")
                     .append("t.creator_type,")
-                    .append("(CASE WHEN t.creator_type=0 THEN au.nickname ELSE u.nickname END),")
-                    .append("CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ")
+                    .append("(CASE WHEN t.creator_type=0 THEN au.nick_name ELSE u.nick_name END),")
+                    .append("(CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END),")
                     .append("truncate(e.id,0) event_id,")
                     .append("trim(e.title) event_title,")
-                    .append("trim(e.happen_time event_happen_time,")
+                    .append("trim(e.happen_time) event_happen_time ")
                     .append("FROM timeline t ")
                     .append("LEFT JOIN event e ON t.event_id=e.id ")
                     .append("LEFT JOIN admin_user au ON t.creator=au.id ")
                     .append("LEFT JOIN user u ON t.creator=u.id ");
             builder.append(" WHERE t.id=")
-                    .append(id)
-                    .append(" ORDER BY create_time DESC");
+                    .append(id);
         }
         builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
