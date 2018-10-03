@@ -210,11 +210,13 @@ public class TimelineDAO extends DAO{
         builder.append("SELECT ");
         builder.append("t.id,")
                 .append("t.title,")
-                .append("t.happen_time,");
+                .append("t.happen_time,")
+                .append("t.del,")
+                .append("t.status,");
         if (queryType != QRY_BY_DETAIL) {
             switch (queryType) {//字段
                 case QRY_BY_CREATOR:
-                    builder.append("substring(t.content,50)")
+                    builder.append("substring(t.content,50) ")
                             .append("FROM timeline t ");
                     break;
                 default:
