@@ -54,7 +54,7 @@ public class CaseDAO extends DAO{
                 "0," +
                 creator + "," +
                 creator_type + ",'" +
-                Tool.getTime() + "'," + Tool.getTime() + ")";
+                Tool.getTime() + "','" + Tool.getTime() + "')";
 
         return executeSql(sql);
     }
@@ -65,7 +65,7 @@ public class CaseDAO extends DAO{
      * @return
      */
     public boolean delete(long id) {
-        String sql = "UPDATE del=1 WHERE id=" + id;
+        String sql = "UPDATE cases SET del=1 WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -75,7 +75,7 @@ public class CaseDAO extends DAO{
      * @return
      */
     public boolean recover(long id) {
-        String sql = "UPDATE del=0 WHERE id=" + id;
+        String sql = "UPDATE cases SET del=0 WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -85,7 +85,7 @@ public class CaseDAO extends DAO{
      * @return
      */
     public boolean pass(long id) {
-        String sql = "UPDATE status=0 WHERE id=" + id;
+        String sql = "UPDATE cases SET status=0 WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -95,7 +95,7 @@ public class CaseDAO extends DAO{
      * @return
      */
     public boolean reject(long id) {
-        String sql = "UPDATE status=2 WHERE id=" + id;
+        String sql = "UPDATE cases SET status=2 WHERE id=" + id;
         return executeSql(sql);
     }
 
@@ -106,11 +106,12 @@ public class CaseDAO extends DAO{
      * @param content
      * @return
      */
-    public boolean update(long id,String title,String content) {
+    public boolean update(long id,long event_id,String title,String content) {
         String sql = "UPDATE cases SET " +
                 "title='" + title + "'," +
                 "content='" + content + "'," +
-                "update_time='" + Tool.getTime() + "' " +
+                "update_time='" + Tool.getTime() + "'," +
+                "event_id=" + event_id + " " +
                 "WHERE id=" + id;
         return executeSql(sql);
     }
@@ -263,12 +264,14 @@ public class CaseDAO extends DAO{
         if (queryType == QRY_DETAIL) {
             builder.append("SELECT c.id,")//案例ID
                     .append("c.title,")//案例标题
+                   .append("c.status,")
+                   .append("c.del,")
                     .append("truncate(e.id,0) event_id,")//事件ID
                     .append("trim(e.title) event_title,")//事件标题
-                    .append("CASE WHEN c.creator_type=0 THEN truncate(au.id 0) user_id ELSE truncate(u.id 0) creator END,")//创建者ID
-                    .append("CASE WHEN c.creator_type=0 THEN trim(au.icon) creator_icon ELSE trim(u.icon) creator_icon END,")//创建者头像
-                    .append("truncate(c.happen_time) case_happen_time,")//案例发生时间
-                    .append("truncate(c.create_time) case_create_time,")//案例创建时间
+                   .append("c.creator,")
+                   .append("c.creator_type,")
+                    .append("(CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END),")//创建者头像
+                    .append("trim(c.create_time) case_create_time,")//案例创建时间
                     .append("c.update_time,")//更新时间
                     .append("c.upvote_count,")//赞成计数
                     .append("c.downvote_count,")//反对计数
@@ -282,10 +285,11 @@ public class CaseDAO extends DAO{
         } else {
             builder.append("SELECT c.id,")//案例ID
                     .append("c.title,")//案例标题
+                   .append("c.status,")
+                   .append("c.del,")
                     .append("c.creator,")//创建者ID
                     .append("c.creator_type,")//创建者类型
-                    .append("truncate(c.happen_time) case_happen_time,")//案例发生时间
-                    .append("truncate(c.create_time) case_create_time,")//案例创建时间
+                    .append("trim(c.create_time) case_create_time,")//案例创建时间
                     .append("c.update_time,")//更新时间
                     .append("c.upvote_count,")//赞成计数
                     .append("c.downvote_count,")//反对计数
@@ -316,11 +320,13 @@ public class CaseDAO extends DAO{
                     builder.append("LEFT JOIN event e ON c.event_id=e.id ")
                             .append("LEFT JOIN user u ON c.creator=u.id ")
                             .append("LEFT JOIN admin_user au ON c.creator=au.id ");
+                    builder.append(" WHERE ");
                     if (del == 0) {
-                        builder.append("e.status=").append(status).append(" AND ");
+                        builder.append("c.status=").append(status).append(" AND c.del=0 ");
                     } else {
-                        builder.append("e.del=").append(del);
+                        builder.append("c.del=").append(del);
                     }
+                    builder.append(" AND e.status=0 AND e.del=0 ");
                     break;
                 default:break;
             }

@@ -24,7 +24,7 @@ public class CaseReadDAO extends DAO{
      * @param user_type
      * @return
      */
-    public boolean add(long case_id,long user_id,long user_type) {
+    public boolean add(long case_id,long user_id,int user_type) {
         return executeSql("INSERT INTO case_read (user_id,user_type,case_id,create_time) VALUES (" + user_id + "," + user_type + "," + case_id + ",'" + Tool.getTime() + "')");
     }
 

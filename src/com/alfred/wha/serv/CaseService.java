@@ -19,6 +19,7 @@ public class CaseService extends Service{
     public CaseService() {
         caseDAO = new CaseDAO();
         caseVoteDAO = new CaseVoteDAO();
+        caseReadDAO = new CaseReadDAO();
     }
 
     /**
@@ -118,10 +119,10 @@ public class CaseService extends Service{
      * @param content
      * @return
      */
-    public String update(boolean is_allow_duplicate,long id,long operator,int operator_type,String title,String content) {
+    public String update(boolean is_allow_duplicate,long id,long event_id,long operator,int operator_type,String title,String content) {
         if (caseDAO.isExist(id,title)) {
             if (is_allow_duplicate) {
-                if (caseDAO.update(id,title,content)) {
+                if (caseDAO.update(id,event_id,title,content)) {
                     LogDao.recordCaseLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新内容为:" + content.substring(0,180));
                     return SUCCESS;
                 }
@@ -129,7 +130,7 @@ public class CaseService extends Service{
             }
             return DUPLICATE;
         }
-        if (caseDAO.update(id, title, content)) {
+        if (caseDAO.update(id,event_id, title, content)) {
             return SUCCESS;
         }
         return FAIL;

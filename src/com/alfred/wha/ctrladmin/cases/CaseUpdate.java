@@ -32,9 +32,10 @@ public class CaseUpdate extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long id = Tool.requestToLong(request,"id");
+        long event_id = Tool.requestToLong(request,"event");
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        out.append(caseService.update(true,id,current_user,current_user_type,title,content));
+        out.append(caseService.update(true,id,event_id,current_user,current_user_type,title,content));
     }
 
     @Override
