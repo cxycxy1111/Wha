@@ -33,7 +33,7 @@ public class CaseListQrySelfCreate extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         int page_no = Tool.requestToInt(request,"page_no");
         if (page_no > 0) {
-            out.append(caseService.querySelfCreate(current_user,current_user_type,page_no,10));
+            out.append(caseService.querySelfCreate(current_user,0,page_no,10));
         }
     }
 

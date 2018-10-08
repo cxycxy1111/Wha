@@ -35,7 +35,7 @@ public class CaseAdd extends BaseServlet {
         long event = Tool.requestToLong(request,"event");
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        out.append(caseService.add(true,event,title,content,current_user,current_user_type));
+        out.append(caseService.add(true,event,title,content,current_user,0));
     }
 
     @Override

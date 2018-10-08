@@ -31,8 +31,7 @@ public class CompanyAdd extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         out.append(companyService.add(request.getParameter("name"),
-                Tool.transformSessionValueToLong(session,"id"),
-                Tool.transformSessionValueToInteger(session,"type")));
+                Tool.transformSessionValueToLong(session,"id"),0));
     }
 
     @Override

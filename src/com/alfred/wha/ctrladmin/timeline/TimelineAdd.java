@@ -36,7 +36,7 @@ public class TimelineAdd extends BaseServlet {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String happen_time = request.getParameter("happen_time");
-        out.append(timelineService.add(true,event,title,content,current_user,current_user_type,happen_time));
+        out.append(timelineService.add(true,event,title,content,current_user,0,happen_time));
     }
 
     @Override

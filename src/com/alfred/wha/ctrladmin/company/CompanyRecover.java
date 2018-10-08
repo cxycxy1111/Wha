@@ -30,11 +30,9 @@ public class CompanyRecover extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        long id = Tool.transformSessionValueToLong(session,"id");
-        int type = Tool.transformSessionValueToInteger(session,"type");
         out.append(companyService.recover(Tool.requestToLong(request,"id"),
-                id,
-                type));
+                current_user,
+                0));
     }
 
     @Override

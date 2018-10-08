@@ -32,7 +32,7 @@ public class ProductAdd extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         out.append(productService.add(Tool.requestToLong(request,"company"),
                 request.getParameter("name"),
-                current_user,current_user_type));
+                current_user,0));
     }
 
     @Override

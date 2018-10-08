@@ -60,8 +60,8 @@ public class CaseReadDAO extends DAO{
         switch (queryType) {
             case QRY_BY_CASE://按案例ID查询
                 builder.append("SELECT cr.user_type,")//用户类型
-                        .append("CASE WHEN cr.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN cr.user_type=0 THEN au.icon ELSE u.icon END,")
+                        .append("trim(CASE cr.user_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE cr.user_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")
                         .append("cr.user_id,")
                         .append("create_time ")
                         .append("FROM case_read cr " +
@@ -72,8 +72,8 @@ public class CaseReadDAO extends DAO{
                 break;
             case QRY_BY_USER://按阅读的用户ID查询
                 builder.append("SELECT cr.user_type,")//用户类型
-                        .append("CASE WHEN c.creator=0 THEN au.nick_name ELSE u.nick_name END,")//案例创建者的昵称
-                        .append("CASE WHEN c.creator=0 THEN au.icon ELSE u.icon END,")//案例创建者的头像
+                        .append("trim(CASE c.creator WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")//案例创建者的昵称
+                        .append("trim(CASE c.creator WHEN 0 THEN au.icon ELSE u.icon END) icon,")//案例创建者的头像
                         .append("cr.user_id,")
                         .append("create_time ")
                         .append("FROM case_read cr " +

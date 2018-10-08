@@ -36,7 +36,7 @@ public class TimelineUpdate extends BaseServlet {
         String content = request.getParameter("content");
         String happen_time = request.getParameter("happen_time");
         long event_id = Tool.requestToLong(request,"event");
-        out.append(timelineService.update(true,id,event_id,current_user,current_user_type,title,content,happen_time));
+        out.append(timelineService.update(true,id,event_id,current_user,0,title,content,happen_time));
     }
 
     @Override

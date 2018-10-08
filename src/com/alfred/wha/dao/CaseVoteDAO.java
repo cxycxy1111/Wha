@@ -132,8 +132,8 @@ public class CaseVoteDAO extends DAO{
                         .append("cv.vote_type,")
                         .append("c.creator,")
                         .append("creator_type,")
-                        .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name,")
-                        .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon")
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name) nick_name,")
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.icon ELSE u.icon) icon")
                         .append("FROM case_vote cv ")
                         .append("LEFT JOIN cases c ON cv.case_id=c.id ")
                         .append("LEFT JOIN admin_user au ON c.creator=au.id ")
@@ -142,8 +142,8 @@ public class CaseVoteDAO extends DAO{
                 break;
             //按案例ID查询
             case QRY_BY_CASE:
-                builder.append("CASE WHEN user_type=0 THEN trim(au.nick_name) user_nickname ELSE trim(u.nick_name) user_nickname,")
-                        .append("CASE WHEN user_type=0 THEN trim(au.icon) user_icon ELSE trim(u.icon) user_icon,")
+                builder.append("trim(CASE cv.user_type WHEN 0 THEN trim(au.nick_name) user_nickname ELSE trim(u.nick_name) nickname,")
+                        .append("trim(CASE cv.user_type WHEN 0 THEN trim(au.icon) user_icon ELSE trim(u.icon) icon,")
                         .append("cv.user_id,")
                         .append("cv.user_type,")
                         .append("cv.case_id,")

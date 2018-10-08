@@ -33,7 +33,7 @@ public class CaseDetailQry extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long case_id = Tool.requestToLong(request,"id");
         System.out.println(case_id);
-        out.append(caseService.queryDetail(case_id,current_user,current_user_type,1,1));
+        out.append(caseService.queryDetail(case_id,current_user,0,1,1));
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CompanyEdit extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         out.append(companyService.changeName(Tool.requestToLong(request,"id"),
                 Tool.transformSessionValueToLong(session,"id"),
-                Tool.transformSessionValueToInteger(session,"type"),
+                0,
                 false,
                 request.getParameter("name")));
     }

@@ -212,63 +212,63 @@ public class TimelineDAO extends DAO{
                 .append("t.title,")
                 .append("t.happen_time,")
                 .append("t.del,")
-                .append("t.status,");
-        if (queryType != QRY_BY_DETAIL) {
-            switch (queryType) {//字段
-                case QRY_BY_CREATOR:
-                    builder.append("substring(t.content,50) ")
-                            .append("FROM timeline t ");
-                    break;
-                default:
-                    builder.append("t.creator,")
-                            .append("t.creator_type,")
-                            .append("(CASE WHEN t.creator_type=0 THEN au.nick_name ELSE u.nick_name END),")
-                            .append("(CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END) ");
-                    builder.append("FROM timeline t ");
-                    break;
-            }
-            builder.append("LEFT JOIN event e ON t.event_id=e.id ")
-                    .append("LEFT JOIN admin_user au ON t.creator=au.id ")
-                    .append("LEFT JOIN user u ON t.creator=u.id ");
-            switch (queryType) {//条件
-                case QRY_BY_CREATOR:
-                    builder.append(" WHERE t.creator=").append(creator)
-                            .append(" AND t.creator_type=").append(creator_type)
-                            .append(" ORDER BY t.create_time DESC");
-                    break;
-                case QRY_BY_EVENT:
-                    builder.append("WHERE t.event_id=").append(event_id)
-                            .append(" AND t.del=0 ")//未删除
-                            .append("AND t.status=0 ")//已过审
-                            .append("ORDER BY t.happen_time DESC");
-                    break;
-                case QRY_BY_STATUS:
-                    if (del == 1) {
-                        builder.append("WHERE t.del=1");
-                    }else {
-                        builder.append("WHERE t.del=0 AND t.status=").append(status);
-                    }
-                    builder.append(" ORDER BY t.id DESC");
-                    break;
-                default:break;
-            }
-
-        }else {//详情
-            builder.append("t.content,")
-                    .append("t.creator,")
-                    .append("t.creator_type,")
-                    .append("(CASE WHEN t.creator_type=0 THEN au.nick_name ELSE u.nick_name END),")
-                    .append("(CASE WHEN t.creator_type=0 THEN au.icon ELSE u.icon END),")
-                    .append("truncate(e.id,0) event_id,")
-                    .append("trim(e.title) event_title,")
-                    .append("trim(e.happen_time) event_happen_time ")
-                    .append("FROM timeline t ")
-                    .append("LEFT JOIN event e ON t.event_id=e.id ")
-                    .append("LEFT JOIN admin_user au ON t.creator=au.id ")
-                    .append("LEFT JOIN user u ON t.creator=u.id ");
-            builder.append(" WHERE t.id=")
-                    .append(id);
+                .append("t.status,")
+                .append("t.create_time,")
+                .append("t.creator_type,");
+        switch (queryType) {
+            case QRY_BY_CREATOR:
+                builder.append("substring(t.content,50) ");
+                break;
+            case QRY_BY_DETAIL:
+                builder.append("t.content,")
+                        .append("t.creator,")
+                        .append("t.creator_type,")
+                        .append("trim(CASE t.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE t.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")
+                        .append("truncate(e.id,0) event_id,")
+                        .append("trim(e.title) event_title,")
+                        .append("trim(e.happen_time) event_happen_time ");
+                break;
+            default:
+                builder.append("t.creator,")
+                        .append("t.creator_type,")
+                        .append("trim(CASE t.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE t.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon ");
+                break;
         }
+        builder.append("FROM timeline t ");
+
+        builder.append("LEFT JOIN event e ON t.event_id=e.id ")
+                .append("LEFT JOIN admin_user au ON t.creator=au.id ")
+                .append("LEFT JOIN user u ON t.creator=u.id ");
+
+        switch (queryType) {//条件
+            case QRY_BY_DETAIL:
+                builder.append(" WHERE t.id=")
+                        .append(id);
+                break;
+            case QRY_BY_CREATOR:
+                builder.append(" WHERE t.creator=").append(creator)
+                        .append(" AND t.creator_type=").append(creator_type)
+                        .append(" ORDER BY t.create_time DESC");
+                break;
+            case QRY_BY_EVENT:
+                builder.append("WHERE t.event_id=").append(event_id)
+                        .append(" AND t.del=0 ")//未删除
+                        .append("AND t.status=0 ")//已过审
+                        .append("ORDER BY t.happen_time DESC");
+                break;
+            case QRY_BY_STATUS:
+                if (del == 1) {
+                    builder.append("WHERE t.del=1");
+                }else {
+                    builder.append("WHERE t.del=0 AND t.status=").append(status);
+                }
+                break;
+            default:break;
+        }
+        builder.append(" ORDER BY t.id DESC");
+
         builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }

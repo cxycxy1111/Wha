@@ -35,7 +35,7 @@ public class CaseUpdate extends BaseServlet {
         long event_id = Tool.requestToLong(request,"event");
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        out.append(caseService.update(true,id,event_id,current_user,current_user_type,title,content));
+        out.append(caseService.update(true,id,event_id,current_user,0,title,content));
     }
 
     @Override

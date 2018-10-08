@@ -33,7 +33,7 @@ public class AdminLock extends BaseServlet {
     @Override
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
-        out.append(adminUserService.lock(Tool.requestToLong(request,"id"),current_user,current_user_type));
+        out.append(adminUserService.lock(Tool.requestToLong(request,"id"),current_user,0));
     }
 
     @Override

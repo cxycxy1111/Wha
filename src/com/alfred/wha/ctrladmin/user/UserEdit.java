@@ -34,7 +34,7 @@ public class UserEdit extends BaseServlet {
         String email = request.getParameter("email");
         String motto = request.getParameter("motto");
         long id = Tool.requestToLong(request,"id");
-        out.append(userService.changeNickNameAndMotto(id,current_user,current_user_type, nick_name,email,motto));
+        out.append(userService.changeNickNameAndMotto(id,current_user,0, nick_name,email,motto));
     }
 
     @Override

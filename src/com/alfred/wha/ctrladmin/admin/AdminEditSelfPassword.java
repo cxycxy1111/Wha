@@ -35,7 +35,7 @@ public class AdminEditSelfPassword extends BaseServlet {
         long id = Tool.requestToLong(request,"id");
         if (id == current_user) {
             String pwd = request.getParameter("pwd");
-            out.append(adminUserService.changePwd(id,current_user,current_user_type,pwd));
+            out.append(adminUserService.changePwd(id,current_user,0,pwd));
         }else {
             out.append(ILLEGAL_INVOKE);
         }

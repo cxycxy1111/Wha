@@ -34,7 +34,7 @@ public class EventAdd extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         String title = request.getParameter("title");
         String happen_time = request.getParameter("happen_time");
-        out.append(eventService.add(title,true,current_user,current_user_type,happen_time));
+        out.append(eventService.add(title,true,current_user,0,happen_time));
     }
 
     @Override

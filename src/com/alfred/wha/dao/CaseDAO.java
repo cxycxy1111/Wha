@@ -270,7 +270,7 @@ public class CaseDAO extends DAO{
                     .append("trim(e.title) event_title,")//事件标题
                    .append("c.creator,")
                    .append("c.creator_type,")
-                    .append("(CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END),")//创建者头像
+                    .append("trim(CASE c.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")//创建者头像
                     .append("trim(c.create_time) case_create_time,")//案例创建时间
                     .append("c.update_time,")//更新时间
                     .append("c.upvote_count,")//赞成计数
@@ -296,8 +296,8 @@ public class CaseDAO extends DAO{
                     .append("c.view_count,")//阅读量
                     .append("truncate(e.id,0) event_id,")//事件ID
                     .append("trim(e.title) event_title,")//事件标题
-                    .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")//创建者ID
-                    .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END,")//创建者头像
+                    .append("trim(CASE c.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")//创建者ID
+                    .append("trim(CASE c.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")//创建者头像
                     //是否读取全内容
                     .append("substring(c.content,1,50) ");//内容
             builder.append("FROM cases c ");

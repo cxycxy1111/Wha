@@ -32,7 +32,7 @@ public class UserEditPassword extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         String pwd = request.getParameter("pwd");
         long id = Tool.requestToLong(request,"id");
-        out.append(userService.changePwd(id, current_user_type, pwd));
+        out.append(userService.changePwd(id, 1, pwd));
     }
 
     @Override

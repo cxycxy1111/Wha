@@ -93,8 +93,8 @@ public class EventSubscribeDAO extends DAO{
             case QRY_BY_EVENT:
                 builder.append("es.user_id,")
                         .append("es.user_type,")
-                        .append("CASE WHEN es.user_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN es.user_type=0 THEN au.icon ELSE u.icon END ");
+                        .append("trim(CASE es.user_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE es.user_type WHEN 0 THEN au.icon ELSE u.icon END) icon ");
                 builder.append("FROM event_subscribe es ");
                 builder.append("LEFT JOIN user u ON es.user_id=u.id ")
                         .append("LEFT JOIN admin_user au ON es.user_id=au.id ");

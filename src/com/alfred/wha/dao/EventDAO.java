@@ -216,8 +216,8 @@ public class EventDAO extends DAO{
                         .append("e.subcribe_count,")
                         .append("e.creator_type,")
                         .append("e.creator,")
-                        .append("CASE WHEN e.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN e.creator_type=0 THEN au.icon ELSE u.icon END ")
+                        .append("trim(CASE e.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE e.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon ")
                         .append("FROM event e ");
                 builder.append("LEFT JOIN user u ON e.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");
@@ -233,8 +233,8 @@ public class EventDAO extends DAO{
                         .append("e.subcribe_count,")
                         .append("e.creator_type,")
                         .append("e.creator,")
-                        .append("CASE WHEN e.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")
-                        .append("CASE WHEN e.creator_type=0 THEN au.icon ELSE u.icon END ")
+                        .append("trim(CASE e.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
+                        .append("trim(CASE e.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon ")
                         .append("FROM event e ");
                 builder.append("LEFT JOIN user u ON e.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON e.creator=au.id ");

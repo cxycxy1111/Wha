@@ -34,7 +34,7 @@ public class EventEdit extends BaseServlet {
         long id = Tool.requestToLong(request,"id");
         String title = request.getParameter("title");
         String happen_time = request.getParameter("happen_time");
-        out.append(eventService.change(id,current_user,current_user_type,true,title,happen_time));
+        out.append(eventService.change(id,current_user,0,true,title,happen_time));
     }
 
     @Override

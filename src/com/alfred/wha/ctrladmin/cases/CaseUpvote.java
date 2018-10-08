@@ -32,7 +32,7 @@ public class CaseUpvote extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long case_id = Tool.requestToLong(request,"id");
-        out.append(caseService.upvote(case_id,current_user,current_user_type));
+        out.append(caseService.upvote(case_id,current_user,0));
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CompanyListQryCreator extends BaseServlet {
         long creator = Tool.requestToLong(request,"id");
         int creator_type = Tool.requestToInt(request,"creator_type");
         int page_no = Tool.requestToInt(request,"page_no");
-        out.append(companyService.queryByCreator(creator,creator_type,page_no,10));
+        out.append(companyService.queryByCreator(creator,0,page_no,10));
     }
 
     @Override

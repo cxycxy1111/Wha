@@ -32,7 +32,7 @@ public class ProductDelete extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         out.append(productService.delete(Tool.requestToLong(request,"id"),
                 current_user,
-                current_user_type));
+                0));
     }
 
     @Override

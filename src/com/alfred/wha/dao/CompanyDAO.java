@@ -187,8 +187,8 @@ public class CompanyDAO extends DAO{
                         .append("c.status,")//公司状态
                         .append("c.creator,")//创建人id
                         .append("c.creator_type,")//创建人类型
-                        .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")//创建人昵称
-                        .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END,")//创建人头像
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")//创建人昵称
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")//创建人头像
                         .append("c.creator_type ")
                         .append("FROM company c ")
                         .append("LEFT JOIN user u ON c.creator=u.id ")
@@ -207,8 +207,8 @@ public class CompanyDAO extends DAO{
                         .append("c.status,")//公司状态
                         .append("c.creator,")//创建人id
                         .append("c.creator_type,")//创建人类型
-                        .append("CASE WHEN c.creator_type=0 THEN au.nick_name ELSE u.nick_name END,")//创建人昵称
-                        .append("CASE WHEN c.creator_type=0 THEN au.icon ELSE u.icon END ")//创建人头像
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")//创建人昵称
+                        .append("trim(CASE c.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon ")//创建人头像
                         .append("FROM company c ")
                         .append("LEFT JOIN user u ON c.creator=u.id ")
                         .append("LEFT JOIN admin_user au ON c.creator=au.id ");

@@ -34,7 +34,7 @@ public class AdminEditPassword extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long id = Tool.requestToLong(request,"id");
         String pwd = request.getParameter("pwd");
-        out.append(adminUserService.changePwd(id,current_user,current_user_type,pwd));
+        out.append(adminUserService.changePwd(id,current_user,0,pwd));
     }
 
     @Override
