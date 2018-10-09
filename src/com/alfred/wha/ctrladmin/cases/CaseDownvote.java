@@ -29,7 +29,7 @@ public class CaseDownvote extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
+    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long case_id = Tool.requestToLong(request,"case");
         out.append(caseService.downvote(case_id,current_user,0));

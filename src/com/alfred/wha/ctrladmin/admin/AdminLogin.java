@@ -30,7 +30,7 @@ public class AdminLogin extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
+    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException{
         out.append(SUCCESS);
     }
 

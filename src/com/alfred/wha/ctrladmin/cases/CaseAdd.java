@@ -30,7 +30,7 @@ public class CaseAdd extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
+    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long event = Tool.requestToLong(request,"event");
         String title = request.getParameter("title");

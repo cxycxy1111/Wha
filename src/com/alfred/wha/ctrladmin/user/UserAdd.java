@@ -28,7 +28,7 @@ public class UserAdd extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) {
+    protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException  {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         String user_name = request.getParameter("user_name");
         String pwd = request.getParameter("pwd");
