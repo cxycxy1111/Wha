@@ -32,12 +32,12 @@ public class TimelineDetailQry extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, 0);
         long id = Tool.requestToLong(request,"id");
-        out.append(timelineService.queryByTimeline(id));
+        out.append(timelineService.queryByTimeline(id,current_user,true));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
-        super.dealWithSessionDead(request, response, session, out);
-
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
+        long id = Tool.requestToLong(request,"id");
+        out.append(timelineService.queryByTimeline(id,0,false));
     }
 }

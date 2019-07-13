@@ -37,7 +37,9 @@ public class SQLHelper {
         }
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
         try {
+            System.out.println(DatabaseBean.getConnection());
             conn = DatabaseBean.getConnection();
+            System.out.println("aaa");
             try {
                 ps = conn.prepareStatement(sql);
                 try {
@@ -61,7 +63,9 @@ public class SQLHelper {
             }
         } catch (Exception e) {
             try {
-                conn.close();
+                if (!conn.isClosed()) {
+                    conn.close();
+                }
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }

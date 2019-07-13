@@ -35,7 +35,7 @@ public class AdminLogin extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         String user_name = request.getParameter("user_name");
         String password = request.getParameter("pwd");
         String result = adminUserService.loginCheck(user_name,password);
@@ -45,10 +45,8 @@ public class AdminLogin extends BaseServlet {
             HttpSession s = request.getSession();
             System.out.println("AdminLogin:session_id=" + s.getId());
             String [] strings = result.split("|");
-            System.out.println("AdminLogin:session_attr:id=" + strings[0]);
-            System.out.println("AdminLogin:session_attr:type=" + strings[2]);
             s.setAttribute("id",strings[0]);
-            s.setAttribute("type",strings[2]);
+            s.setAttribute("type","0");
             out.append(BaseServlet.SUCCESS);
         }
     }

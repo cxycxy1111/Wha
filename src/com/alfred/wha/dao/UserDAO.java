@@ -112,6 +112,18 @@ public class UserDAO extends DAO{
     }
 
     /**
+     * 修改密码
+     * @param user_name
+     * @param pwd
+     * @return
+     */
+    public boolean updatePwdByUsername(String user_name,String pwd) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE user SET pwd='").append(Tool.getMd5FromString(pwd)).append("' WHERE user_name='").append(user_name).append("'");
+        return executeSql(builder.toString());
+    }
+
+    /**
      * 修改头像
      * @param id
      * @param icon_name
@@ -160,6 +172,56 @@ public class UserDAO extends DAO{
     public long queryIdByUserName(String user_name) {
         String sql = "SELECT id FROM user WHERE user_name='" + user_name + "'";
         return Tool.getLongFromArrayList(helper.query(sql),"id");
+    }
+
+    /**
+     * 通过用户名查询id
+     * @param user_name
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryByUserName(String user_name) {
+        String sql = "SELECT * FROM user WHERE user_name='" + user_name + "'";
+        return helper.query(sql);
+    }
+
+    /**
+     * 通过用户名查询id
+     * @param user_name
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryByUserNameAndEmail(String user_name,String email_address) {
+        String sql = "SELECT * FROM user WHERE user_name='" + user_name + "' AND email='" + email_address + "'";
+        return helper.query(sql);
+    }
+
+    /**
+     * 通过用户名查询id
+     * @param email_address
+     * @return
+     */
+    public String queryUserNameByEmailAddress(String email_address) {
+        String sql = "SELECT user_name FROM user WHERE email='" + email_address + "'";
+        return String.valueOf(helper.query(sql).get(0).get("user_name"));
+    }
+
+    /**
+     * 通过用户名查询id
+     * @param email_address
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> queryUserNamesByEmailAddress(String email_address) {
+        String sql = "SELECT user_name FROM user WHERE email='" + email_address + "'";
+        return helper.query(sql);
+    }
+
+    /**
+     * 通过用户名查询类型
+     * @param user_name
+     * @return
+     */
+    public long querytypeByUserName(String user_name) {
+        String sql = "SELECT user_type FROM user WHERE user_name='" + user_name + "'";
+        return Tool.getLongFromArrayList(helper.query(sql),"user_type");
     }
 
     public ArrayList<HashMap<String,Object>> queryDetail(long id,int page_no,int length) {
@@ -229,6 +291,16 @@ public class UserDAO extends DAO{
      */
     public boolean isExist(String user_name) {
         String sql = "SELECT * FROM user WHERE user_name = '" + user_name + "'";
+        return helper.query(sql).size() != 0;
+    }
+
+    /**
+     * 通过用户名查询是否存在
+     * @param email_address
+     * @return
+     */
+    public boolean isExistEmailAddress(String email_address) {
+        String sql = "SELECT * FROM user WHERE email = '" + email_address + "'";
         return helper.query(sql).size() != 0;
     }
 

@@ -1,6 +1,5 @@
 package com.alfred.wha.ctrladmin.eventsubscribe;
 
-import com.alfred.wha.serv.CaseVoteService;
 import com.alfred.wha.serv.EventSubscribeService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
@@ -37,7 +36,7 @@ public class EventSubscribeQryByEvent extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

@@ -16,8 +16,8 @@ public class AdminLogout extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected void doPoAdminLogoutst(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,7 +32,7 @@ public class AdminLogout extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         out.append(SUCCESS);
     }
 }

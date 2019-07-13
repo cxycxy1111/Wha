@@ -30,11 +30,14 @@ public class BaseServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/text;charset=utf-8");
         doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("utf-8");
+        response.setContentType("text/text;charset=utf-8");
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("id") != null) {
@@ -49,7 +52,7 @@ public class BaseServlet extends HttpServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
     }
 
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         out.append(SESSION_EXPIRED);
     }
 

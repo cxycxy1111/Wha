@@ -2,19 +2,17 @@
   <library name="Database">
     <CLASSES>
       <root url="jar://$USER_HOME$/develop/lib/server/c3p0-0.9.5.2.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/c3p0-oracle-thin-extras-0.9.5.2.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/commons-lang3-3.5.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/gson-2.8.2.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/json-20170516.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/json-lib-2.4-jdk15.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/json-simple-1.1.1.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/mchange-commons-java-0.2.11.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/MiPush_SDK_Server_2_2_19.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/mysql-connector-java-5.1.34-bin.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/mysql-connector-java-5.1.44-bin.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/mysql-connector-java-5.1.46.jar!/" />
       <root url="jar://$USER_HOME$/develop/lib/server/org.apache.commons.lang_2.4.0.v201005080502.jar!/" />
-      <root url="jar://$USER_HOME$/develop/lib/server/org.json.jar!/" />
+      <root url="jar://$USER_HOME$/develop/lib/server/jsoup-1.12.1.jar!/" />
+      <root url="jar://$USER_HOME$/develop/lib/server/commons-codec-1.12.jar!/" />
+      <root url="jar://$USER_HOME$/develop/lib/server/mail.jar!/" />
+      <root url="jar://$USER_HOME$/develop/lib/server/activation.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -34,11 +34,13 @@ public class EventEdit extends BaseServlet {
         long id = Tool.requestToLong(request,"id");
         String title = request.getParameter("title");
         String happen_time = request.getParameter("happen_time");
-        out.append(eventService.change(id,current_user,0,true,title,happen_time));
+        int type = Tool.requestToInt(request,"type");
+        int important = Tool.requestToInt(request,"important");
+        out.append(eventService.change(id,current_user,0,true,title,happen_time,type,important));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

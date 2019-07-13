@@ -15,7 +15,12 @@ public class DatabaseBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/Whale?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true&ssl_mode=disabled";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/Whale?" +
+            "useUnicode=true&" +
+            "characterEncoding=utf8&" +
+            "useOldAliasMetadataBehavior=true&" +
+            "ssl_mode=disabled&" +
+            "useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "cxycxy11";
 
@@ -62,7 +67,7 @@ public class DatabaseBean implements Serializable {
      * @return 数据连接对象
      * @throws SQLException
      */
-    public static synchronized Connection getConnection() throws SQLException {
+    static synchronized Connection getConnection() throws SQLException {
         final Connection conn = ds.getConnection();
         conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         return conn;

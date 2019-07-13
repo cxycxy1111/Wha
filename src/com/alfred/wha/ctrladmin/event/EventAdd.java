@@ -1,6 +1,5 @@
 package com.alfred.wha.ctrladmin.event;
 
-import com.alfred.wha.serv.CaseService;
 import com.alfred.wha.serv.EventService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
@@ -33,12 +32,14 @@ public class EventAdd extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         String title = request.getParameter("title");
+        int type = Tool.requestToInt(request,"type");
+        int important = Tool.requestToInt(request,"important");
         String happen_time = request.getParameter("happen_time");
-        out.append(eventService.add(title,true,current_user,0,happen_time));
+        out.append(eventService.add(title,type,important,true,current_user,0,happen_time));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

@@ -27,24 +27,12 @@ public class LogDao{
         add("user",id,operate_type,operator,operator_type,content);
     }
 
-    public static void recordCompanyLog(long id,int operate_type,long operator,int operator_type,String content) {
-        add("company",id,operate_type,operator,operator_type,content);
-    }
-
-    public static void recordProductLog(long id,int operate_type,long operator,int operator_type,String content) {
-        add("product",id,operate_type,operator,operator_type,content);
-    }
-
     public static void recordEventLog(long id,int operate_type,long operator,int operator_type,String content) {
         add("event",id,operate_type,operator,operator_type,content);
     }
 
     public static void recordTimelineLog(long id,int operate_type,long operator,int operator_type,String content) {
         add("timeline",id,operate_type,operator,operator_type,content);
-    }
-
-    public static void recordCaseLog(long id,int operate_type,long operator,int operator_type,String content) {
-        add("cases",id,operate_type,operator,operator_type,content);
     }
 
     private static void add(String table_name,long id,int operate_type,long operator,int operator_type,String content) {

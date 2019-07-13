@@ -32,11 +32,11 @@ public class EventListQryNormal extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         int page_no = Tool.requestToInt(request,"page_no");
-        out.append(eventService.queryPassed(page_no,10));
+        out.append(eventService.queryPassed(page_no,20));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

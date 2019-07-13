@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="TomcatAPI">
     <CLASSES>
-      <root url="jar:///usr/local/tomcat/lib/mysql-connector-java-5.1.46.jar!/" />
-      <root url="jar:///usr/local/tomcat/lib/org.json.jar!/" />
       <root url="jar:///usr/local/tomcat/lib/annotations-api.jar!/" />
       <root url="jar:///usr/local/tomcat/lib/c3p0-0.9.5.2.jar!/" />
       <root url="jar:///usr/local/tomcat/lib/catalina-ant.jar!/" />

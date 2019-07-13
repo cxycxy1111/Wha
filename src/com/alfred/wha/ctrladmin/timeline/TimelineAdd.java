@@ -1,6 +1,5 @@
 package com.alfred.wha.ctrladmin.timeline;
 
-import com.alfred.wha.serv.CaseService;
 import com.alfred.wha.serv.TimelineService;
 import com.alfred.wha.util.BaseServlet;
 import com.alfred.wha.util.Tool;
@@ -34,13 +33,14 @@ public class TimelineAdd extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long event = Tool.requestToLong(request,"event");
         String title = request.getParameter("title");
+        String summary = request.getParameter("summary");
         String content = request.getParameter("content");
         String happen_time = request.getParameter("happen_time");
-        out.append(timelineService.add(true,event,title,content,current_user,0,happen_time));
+        out.append(timelineService.add(true,event,title,summary,content,current_user,0,happen_time));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

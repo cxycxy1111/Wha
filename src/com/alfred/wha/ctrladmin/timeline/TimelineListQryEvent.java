@@ -33,12 +33,14 @@ public class TimelineListQryEvent extends BaseServlet {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long event = Tool.requestToLong(request,"event");
         int page_no = Tool.requestToInt(request,"page_no");
-        out.append(timelineService.queryByEvent(event,page_no,10));
+        out.append(timelineService.queryByEvent(event,page_no,20));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
-        super.dealWithSessionDead(request, response, session, out);
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
+        long event = Tool.requestToLong(request,"event");
+        int page_no = Tool.requestToInt(request,"page_no");
+        out.append(timelineService.queryByEvent(event,page_no,20));
 
     }
 }

@@ -31,6 +31,11 @@ public class Service {
     static final int LOG_OPERATE_PASS = 8;
     static final int LOG_OPERATE_REJECT = 9;
 
+
+    static final String path_icon = "/usr/local/Whale/UserIcon/";
+    static final String path_timeline_content = "/usr/local/Whale/Timeline/";
+    static final String path_page_content = "/usr/local/Whale/Pages/";
+
     public Service() {
         logDao = new LogDao();
     }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "TimelineAdd",urlPatterns = "/admin/timeline/qry/creator")
+@WebServlet(name = "TimelineListQryCreator",urlPatterns = "/admin/timeline/qry/creator")
 /**
  * http://localhost:8080/admin/timeline/qry/creator?creator=1&creator_type=1
  */
@@ -38,7 +38,7 @@ public class TimelineListQryCreator extends BaseServlet {
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

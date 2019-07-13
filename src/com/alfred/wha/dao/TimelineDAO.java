@@ -23,30 +23,35 @@ public class TimelineDAO extends DAO{
      * 新增
      * @param event_id
      * @param title
-     * @param content
      * @param creator
      * @param creator_type
      * @return
      */
-    public boolean add(long event_id,String title,String content,long creator,int creator_type,String happen_time) {
+    public boolean add(long event_id,String title,String summary,long creator,int creator_type,String happen_time) {
         return executeSql("INSERT INTO timeline (" +
                 "event_id," +
                 "title," +
-                "content," +
+                "summary,content," +
                 "del," +
                 "status," +
                 "creator," +
                 "creator_type," +
-                "create_time,happen_time) VALUES (" +
+                "create_time," +
+                "happen_time) VALUES (" +
                 event_id +",'" +
                 title + "','" +
-                content + "'," +
+                summary + "','default value'," +
                 "0," +
-                "1," +
+                "0," +
                 creator + "," +
                 creator_type + ",'" +
                 Tool.getTime() + "','" +
                 happen_time + "')");
+    }
+
+
+    public boolean addReport(long timeline_id,int content_type,int type) throws SQLException {
+        return helper.update("INSERT INTO timeline_reported (timeline_id,content_type,type,create_time) VALUES (" + timeline_id +","+ content_type + "," + type +  ",'" + Tool.getTime() + "')");
     }
 
     /**
@@ -73,17 +78,14 @@ public class TimelineDAO extends DAO{
      * 更新时间线
      * @param id
      * @param title
-     * @param content
      * @param happen_time
      * @return
      */
-    public boolean update(long id,long event_id,String title,String content,String happen_time) {
+    public boolean update(long id,String title,String summary,String happen_time) {
         return executeSql("UPDATE timeline SET " +
                 "title='" + title + "'," +
-                "content='" + content + "'," +
-                "happen_time='" + happen_time + "'," +
-                "event_id=" + event_id +
-                " WHERE id=" + id);
+                "summary='" + summary + "'," +
+                "happen_time='" + happen_time + "' WHERE id=" + id);
     }
 
     /**
@@ -122,6 +124,11 @@ public class TimelineDAO extends DAO{
         return updateStatus(ids,false);
     }
 
+
+    public int queryMaxId() {
+        return Tool.getIntegerFromArrayList(helper.query("SELECT max(id) FROM timeline"),"max(id)");
+    }
+
     /**
      * 通过标题查询是否存在
      * @param id
@@ -150,7 +157,40 @@ public class TimelineDAO extends DAO{
      */
     public boolean isExist(long id) {
         String sql = "SELECT * FROM timeline WHERE id = " + id;
-        return helper.query(sql).size() != 0;
+        if (helper.query(sql).size() ==  0) {
+            return false;
+        }else  {
+            return true;
+        }
+    }
+
+    public ArrayList<HashMap<String,Object>> queryFullWithoutDelete() {
+        return helper.query("SELECT id,content FROM timeline");
+    }
+
+    public ArrayList<HashMap<String,Object>> queryFull(int page_no) {
+        return helper.query("SELECT b.import,b.type,a.id,a.event_id,a.title,trim(b.title) event_title,a.summary,a.happen_time FROM timeline a " +
+                "LEFT JOIN event b ON a.event_id=b.id " +
+                "WHERE b.del=0 AND b.status=0 AND a.del=0 AND a.status=0  AND b.import = 0 " +
+                "ORDER BY a.happen_time DESC " +
+                "LIMIT " + ((page_no-1)*20) + ",20" );
+    }
+
+    public ArrayList<HashMap<String,Object>> queryByType(String type,int page_no) {
+        return helper.query("SELECT a.id,a.event_id,a.title,trim(b.title) event_title,a.summary,a.happen_time FROM timeline a " +
+                "LEFT JOIN event b ON a.event_id=b.id " +
+                "WHERE b.del=0 AND b.status=0 AND a.del=0 AND a.status=0 AND b.type IN(" + type + ") " +
+                "ORDER BY a.happen_time DESC " +
+                "LIMIT " + ((page_no-1)*20) + ",20" );
+    }
+
+    public ArrayList<HashMap<String,Object>> queryByImportant(int page_no) {
+        return helper.query("SELECT a.id,a.event_id,a.title,trim(b.title) event_title,a.summary,a.happen_time FROM timeline a " +
+                "LEFT JOIN event b ON a.event_id=b.id " +
+                //AND a.happen_time > DATE_SUB(NOW(),INTERVAL '7 0:0:0' DAY_SECOND)
+                "WHERE b.del=0 AND b.status=0 AND a.del=0 AND a.status=0 AND b.import=1 " +
+                "ORDER BY a.happen_time DESC " +
+                "LIMIT " + ((page_no-1)*20) + ",20" );
     }
 
     /**
@@ -212,22 +252,25 @@ public class TimelineDAO extends DAO{
                 .append("t.title,")
                 .append("t.happen_time,")
                 .append("t.del,")
-                .append("t.status,")
+                .append("t.status,t.summary,")
                 .append("t.create_time,")
-                .append("t.creator_type,");
+                .append("t.creator_type,")
+                .append("t.event_id,");
         switch (queryType) {
             case QRY_BY_CREATOR:
                 builder.append("substring(t.content,50) ");
                 break;
             case QRY_BY_DETAIL:
-                builder.append("t.content,")
-                        .append("t.creator,")
+                builder.append("t.creator,")
                         .append("t.creator_type,")
                         .append("trim(CASE t.creator_type WHEN 0 THEN au.nick_name ELSE u.nick_name END) nick_name,")
                         .append("trim(CASE t.creator_type WHEN 0 THEN au.icon ELSE u.icon END) icon,")
                         .append("truncate(e.id,0) event_id,")
                         .append("trim(e.title) event_title,")
                         .append("trim(e.happen_time) event_happen_time ");
+                break;
+            case QRY_BY_EVENT:
+                builder.append("t.summary ");
                 break;
             default:
                 builder.append("t.creator,")
@@ -237,7 +280,6 @@ public class TimelineDAO extends DAO{
                 break;
         }
         builder.append("FROM timeline t ");
-
         builder.append("LEFT JOIN event e ON t.event_id=e.id ")
                 .append("LEFT JOIN admin_user au ON t.creator=au.id ")
                 .append("LEFT JOIN user u ON t.creator=u.id ");
@@ -249,14 +291,12 @@ public class TimelineDAO extends DAO{
                 break;
             case QRY_BY_CREATOR:
                 builder.append(" WHERE t.creator=").append(creator)
-                        .append(" AND t.creator_type=").append(creator_type)
-                        .append(" ORDER BY t.create_time DESC");
+                        .append(" AND t.creator_type=").append(creator_type);
                 break;
             case QRY_BY_EVENT:
                 builder.append("WHERE t.event_id=").append(event_id)
                         .append(" AND t.del=0 ")//未删除
-                        .append("AND t.status=0 ")//已过审
-                        .append("ORDER BY t.happen_time DESC");
+                        .append("AND t.status=0 ");//已过审
                 break;
             case QRY_BY_STATUS:
                 if (del == 1) {
@@ -267,8 +307,17 @@ public class TimelineDAO extends DAO{
                 break;
             default:break;
         }
-        builder.append(" ORDER BY t.id DESC");
-
+        switch (queryType) {
+            case QRY_BY_CREATOR:
+                builder.append(" ORDER BY t.create_time DESC");
+                break;
+            case  QRY_BY_EVENT:
+                builder.append("ORDER BY t.happen_time DESC");
+                break;
+            default:
+                builder.append(" ORDER BY t.id DESC");
+                break;
+        }
         builder.append(" LIMIT ").append((page_no-1)*length).append(",").append(length);
         return helper.query(builder.toString());
     }

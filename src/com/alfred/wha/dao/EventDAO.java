@@ -26,20 +26,20 @@ public class EventDAO extends DAO{
      * @param happen_time
      * @return
      */
-    public boolean add(String title,long creator,int creator_type,String happen_time) {
+    public boolean add(String title,int type,int important,long creator,int creator_type,String happen_time) {
         String sql = "INSERT INTO event (title," +
                 "del," +
                 "status," +
                 "subcribe_count," +
                 "creator," +
-                "creator_type," +
+                "creator_type,import,type,hidden," +
                 "create_time,happen_time) VALUES ('" +
                 title + "'," +
                 "0," +
-                "1," +
+                "0," +
                 "0," +
                 creator + "," +
-                creator_type + ",'" +
+                creator_type + "," + important + "," + type + ",0,'" +
                 Tool.getTime() + "','" +
                 happen_time + "')";
         return executeSql(sql);
@@ -70,8 +70,8 @@ public class EventDAO extends DAO{
      * @param happen_time
      * @return
      */
-    public boolean change(long id,String name,String happen_time) {
-        return executeSql("UPDATE event SET title='" + name + "',happen_time='" + happen_time + "' WHERE id=" + id);
+    public boolean change(long id,String name,String happen_time,int type,int important) {
+        return executeSql("UPDATE event SET title='" + name + "',happen_time='" + happen_time + "',type=" + type + ",import=" + important + " WHERE id=" + id);
     }
 
     /**
@@ -91,6 +91,26 @@ public class EventDAO extends DAO{
     public boolean reject(long id) {
         return executeSql("UPDATE event SET status=2 WHERE id=" + id);
     }
+
+
+    /**
+     * 隐藏
+     * @param id
+     * @return
+     */
+    public boolean hide(long id) {
+        return executeSql("UPDATE event SET hidden=1 WHERE id=" + id);
+    }
+
+    /**
+     * 隐藏
+     * @param id
+     * @return
+     */
+    public boolean withdrawHide(long id) {
+        return executeSql("UPDATE event SET hidden=0 WHERE id=" + id);
+    }
+
 
     /**
      * 通过标题查询是否存在
@@ -163,6 +183,26 @@ public class EventDAO extends DAO{
     }
 
     /**
+     * 查询已通过
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> querySimplePassed(int page_no,int length) {
+        return helper.query("SELECT id,title,happen_time,import,type FROM event " +
+                "WHERE status=0 AND del=0 AND hidden=0 " +
+                "ORDER BY id DESC");
+    }
+
+    /**
+     * 查询未隐藏
+     * @return
+     */
+    public ArrayList<HashMap<String,Object>> querySimplePassedHidden(int page_no,int length) {
+        return helper.query("SELECT id,title,happen_time,import,type FROM event " +
+                "WHERE status=0 AND del=0 AND hidden=1 " +
+                "ORDER BY id DESC");
+    }
+
+    /**
      * 查询未审核
      * @return
      */
@@ -193,6 +233,7 @@ public class EventDAO extends DAO{
         switch (queryType) {
             case QRY_BY_CREATOR://通过创建者查询
                 builder.append("e.id,")
+                        .append("e.hidden,")
                         .append("e.title,")
                         .append("e.del,")
                         .append("e.status,")
@@ -209,9 +250,10 @@ public class EventDAO extends DAO{
                 break;
             case QRY_BY_EVENT://通过具体ID查询
                 builder.append("e.id,")
+                        .append("e.hidden,")
                         .append("e.title,")
                         .append("e.del,")
-                        .append("e.status,")
+                        .append("e.status,e.import,e.type,")
                         .append("e.happen_time,")
                         .append("e.subcribe_count,")
                         .append("e.creator_type,")
@@ -227,6 +269,7 @@ public class EventDAO extends DAO{
             case QRY_BY_STATUS://通过状态查询
                 builder.append("e.id,")
                         .append("e.title,")
+                        .append("e.hidden,")
                         .append("e.del,")
                         .append("e.status,")
                         .append("e.happen_time,")

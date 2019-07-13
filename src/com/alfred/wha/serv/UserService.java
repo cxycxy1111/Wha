@@ -13,6 +13,7 @@ public class UserService extends Service{
     public UserDAO userDAO;
     public UserLoginLogDAO userLoginLogDAO;
 
+
     public UserService() {
         userDAO = new UserDAO();
         userLoginLogDAO = new UserLoginLogDAO();
@@ -35,7 +36,11 @@ public class UserService extends Service{
         if (userDAO.isExist(username)) {
             return DUPLICATE;
         }
+        if (userDAO.isExistEmailAddress(email)) {
+            return DUPLICATE;
+        }
         if (userDAO.add(username, Tool.getMd5FromString(pwd),nick_name,email,motto)) {
+            Tool.storeImage(Tool.getImage("default_icon",path_icon),username,path_icon);
             return SUCCESS;
         }
         return FAIL;
@@ -121,6 +126,46 @@ public class UserService extends Service{
     }
 
     /**
+     * 修改密码
+     * @param user_name
+     * @param new_pwd
+     * @return
+     */
+    public String changePwdByUserName(String user_name,int operator_type,String new_pwd) {
+        if (userDAO.queryByUserName(user_name).size() == 0) {
+            return NO_SUCH_RECORD;
+        }
+        long id = userDAO.queryIdByUserName(user_name);
+        if (userDAO.updatePwdByUsername(user_name,new_pwd)) {
+            LogDao.recordUserLog(id,LOG_OPERATE_CHANGE_PWD,id,operator_type,"新昵称:" + Tool.getMd5FromString(new_pwd));
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 修改密码
+     * @param user_name
+     * @param new_pwd
+     * @return
+     */
+    public String changePwdByUserNameAndEmail(String user_name,String email_address,int operator_type,String new_pwd) {
+        if (userDAO.queryByUserName(user_name).size() == 0) {
+            return NO_SUCH_RECORD;
+        }
+        if (userDAO.queryByUserNameAndEmail(user_name,email_address).size() == 0) {
+            return NOT_MATCH;
+        }
+        long id = userDAO.queryIdByUserName(user_name);
+        if (userDAO.updatePwdByUsername(user_name,new_pwd)) {
+            LogDao.recordUserLog(id,LOG_OPERATE_CHANGE_PWD,id,operator_type,"新昵称:" + Tool.getMd5FromString(new_pwd));
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+
+    /**
      * 解锁用户
      * @param id
      * @return
@@ -149,14 +194,14 @@ public class UserService extends Service{
         }
         if (userDAO.queryPwdByUsername(username).equals(Tool.getMd5FromString(pwd))) {
             userLoginLogDAO.recordLoginLog(username,pwd,1, Tool.getTime(),ip,system_version,system_model,device_brand,app_version);
-            return String.valueOf(userDAO.queryIdByUserName(username));
+            return String.valueOf(userDAO.queryIdByUserName(username)) + "|" + String.valueOf(userDAO.querytypeByUserName(username));
         }
         userLoginLogDAO.recordLoginLog(username,pwd,0, Tool.getTime(),ip,system_version,system_model,device_brand,app_version);
         return FAIL;
     }
 
     /**
-     * 查询已删除的列表
+     * 查询已删除的用户列表
      * @return
      */
     public String queryDeleted(int page_no,int length) {
@@ -169,7 +214,7 @@ public class UserService extends Service{
     }
 
     /**
-     * 查询已删除的列表
+     * 查询已删除的用户列表
      * @return
      */
     public String queryNormal(int page_no,int length) {
@@ -204,5 +249,32 @@ public class UserService extends Service{
             return QRY_RESULT_EMPTY;
         }
         return Tool.transformFromCollection(userDAO.queryDetail(id,1,1));
+    }
+
+    /**
+     * 用于用户自己查询详情
+     * @param id
+     * @return
+     */
+    public String queryDetailByUserSelf(long id) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        if (!userDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        HashMap<String,Object> hashMap = userDAO.queryDetail(id,1,1).get(0);
+        String user_name = String.valueOf(hashMap.get("user_name"));
+        String image = Tool.getImage(user_name,path_icon);
+        hashMap.put("icon",image);
+        arrayList.add(hashMap);
+        return Tool.transformFromCollection(arrayList);
+    }
+
+
+    public String changeIcon(long id,String imgStr) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = userDAO.queryDetail(id,1,1);
+        String user_name = String.valueOf(arrayList.get(0).get("user_name"));
+        Tool.storeImage(imgStr,user_name,path_icon);
+        return SUCCESS;
     }
 }

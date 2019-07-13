@@ -32,15 +32,15 @@ public class TimelineUpdate extends BaseServlet {
     protected void dealWithSessionAlive(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out, long current_user, int current_user_type) throws IOException {
         super.dealWithSessionAlive(request, response, session, out, current_user, current_user_type);
         long id = Tool.requestToLong(request,"id");
+        String summary = request.getParameter("summary");
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String happen_time = request.getParameter("happen_time");
-        long event_id = Tool.requestToLong(request,"event");
-        out.append(timelineService.update(true,id,event_id,current_user,0,title,content,happen_time));
+        out.append(timelineService.update(true,id,current_user,0,title,summary,content,happen_time));
     }
 
     @Override
-    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) {
+    protected void dealWithSessionDead(HttpServletRequest request, HttpServletResponse response, HttpSession session, PrintWriter out) throws IOException {
         super.dealWithSessionDead(request, response, session, out);
 
     }

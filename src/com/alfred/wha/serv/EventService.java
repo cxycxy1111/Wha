@@ -25,17 +25,17 @@ public class EventService extends Service{
      * @param happen_time
      * @return
      */
-    public String add(String title,boolean is_alow_duplicate,long creator,int creator_type,String happen_time) {
+    public String add(String title,int type,int important,boolean is_alow_duplicate,long creator,int creator_type,String happen_time) {
         if (eventDAO.isExist(title)) {
             if (is_alow_duplicate) {
-                if (eventDAO.add(title,creator,creator_type,happen_time)) {
+                if (eventDAO.add(title,type,important,creator,creator_type,happen_time)) {
                     return SUCCESS;
                 }
                 return FAIL;
             }
             return DUPLICATE;
         }
-        if (eventDAO.add(title,creator,creator_type,happen_time)) {
+        if (eventDAO.add(title,type,important,creator,creator_type,happen_time)) {
             return SUCCESS;
         }
         return FAIL;
@@ -58,7 +58,7 @@ public class EventService extends Service{
     }
 
     /**
-     * 删除
+     * 恢复
      * @param id
      * @return
      */
@@ -73,6 +73,39 @@ public class EventService extends Service{
         return FAIL;
     }
 
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public String hide(long id,long operator,int operator_type) {
+        if (!eventDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        if (eventDAO.hide(id)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_DELETE,operator,operator_type,"隐藏事件");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public String withdrawHide(long id,long operator,int operator_type) {
+        if (!eventDAO.isExist(id)) {
+            return QRY_RESULT_EMPTY;
+        }
+        if (eventDAO.withdrawHide(id)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_DELETE,operator,operator_type,"取消隐藏事件");
+            return SUCCESS;
+        }
+        return FAIL;
+    }
+
     /**
      * 修改
      * @param id
@@ -80,19 +113,19 @@ public class EventService extends Service{
      * @param happen_time
      * @return
      */
-    public String change(long id,long operator,int operator_type,boolean is_alow_duplicate,String name,String happen_time) {
+    public String change(long id,long operator,int operator_type,boolean is_alow_duplicate,String name,String happen_time,int type,int important) {
         if (eventDAO.isExist(id,name)) {
             if (is_alow_duplicate){
-                if (eventDAO.change(id,name,happen_time)) {
-                    LogDao.recordCompanyLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time);
+                if (eventDAO.change(id,name,happen_time,type,important)) {
+                    LogDao.recordEventLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time + ",重要为:" + important + ",类型为:" + type);
                     return SUCCESS;
                 }
                 return FAIL;
             }
             return DUPLICATE;
         }
-        if (eventDAO.change(id,name,happen_time)) {
-            LogDao.recordEventLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time);
+        if (eventDAO.change(id,name,happen_time,type,important)) {
+            LogDao.recordEventLog(id,LOG_OPERATE_EDIT,operator,operator_type,"新标题为:" + name + ",发生时间为:" + happen_time + ",重要为:" + important + ",类型为:" + type );
             return SUCCESS;
         }
         return FAIL;
@@ -220,6 +253,33 @@ public class EventService extends Service{
     public String queryPassed(int page_no,int length) {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
         arrayList = eventDAO.queryPassed(page_no,length);
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+    /**
+     * 查询已通过
+     * @return
+     */
+    public String querySimplePassed(int page_no,int length) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = eventDAO.querySimplePassed(page_no,length);
+        if (arrayList.size() == 0) {
+            return QRY_RESULT_EMPTY;
+        }
+        return Tool.transformFromCollection(arrayList);
+    }
+
+
+    /**
+     * 查询已通过
+     * @return
+     */
+    public String querySimplePassedHidden(int page_no,int length) {
+        ArrayList<HashMap<String,Object>> arrayList = new ArrayList<>();
+        arrayList = eventDAO.querySimplePassedHidden(page_no,length);
         if (arrayList.size() == 0) {
             return QRY_RESULT_EMPTY;
         }

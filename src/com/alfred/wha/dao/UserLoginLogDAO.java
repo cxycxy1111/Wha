@@ -31,7 +31,7 @@ public class UserLoginLogDAO {
         String sql = "INSERT INTO user_login_log (input_user_name,input_pwd,is_sucess,login_time," +
                 "login_ip,system_version,system_model,device_brand,app_version) VALUES ('" +
                 input_user_name + "','" + input_pwd + "'," + is_sucess + ",'" + login_time + "','" + login_ip
-                + "','" + system_version + "','" + system_model + "','" + device_brand + "','" + app_version + "'";
+                + "','" + system_version + "','" + system_model + "','" + device_brand + "','" + app_version + "')";
         boolean b = false;
         try {
             b = helper.update(sql);
